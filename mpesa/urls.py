@@ -1,11 +1,14 @@
 from rest_framework.urlpatterns import format_suffix_patterns
 from django.conf.urls import url
-from .views import authenticate
+from .views import authenticate, transactions_record
 
 urlpatterns = [
     url(r'^get_token/$',
         view=authenticate,
         name="get-mpesa-token-request",),
+    url(r'^get_token/$',
+        view=transactions_record,
+        name="add-transaction-response",),
 ]
 urlpatterns = format_suffix_patterns(urlpatterns, allowed=['json'])
 
