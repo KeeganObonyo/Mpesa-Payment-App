@@ -51,17 +51,22 @@ def encryptInitiatorPassword():
 def busines_to_customer_payment(self):
 
     access_token = "Access-Token"
+    amount = request.data['amount']
+    comments = request.data['comments']
+    phoneno = request.data['recepient_number']
+    shortcode = request.data['company_short_code']
+    company_name = request.data['company_name']
     api_url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest"
     initiator = encryptInitiatorPassword(r)
     headers = {"Authorization": "Bearer %s" % access_token}
     request = {
-        "InitiatorName": "XELPHAHEALTH ",
+        "InitiatorName": company_name,
         "SecurityCredential": initiator,
         "CommandID": "BusinessPayment",
-        "Amount": " ",
-        "PartyA": " ",
-        "PartyB": " ",
-        "Remarks": " ",
+        "Amount": amount,
+        "PartyA": shortcode,
+        "PartyB": phoneno,
+        "Remarks": comments,
         "QueueTimeOutURL": "/",
         "ResultURL": "mpesa/transactions_record/",
         "Occasion": ""
