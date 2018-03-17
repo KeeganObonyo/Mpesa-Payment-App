@@ -72,10 +72,9 @@ def create_transaction(self, *args, **kwargs):
         except:
             raise Http404
         api_url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest"
-#        initiator = encryptInitiatorPassword(r)
         headers = {"Authorization": "Bearer %s" % access_token}
         request = {
-            "InitiatorName": company_name,
+            "InitiatorName": initiator_name,
             "SecurityCredential": initiator,
             "CommandID": "BusinessPayment",
             "Amount": amount,
