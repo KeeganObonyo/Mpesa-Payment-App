@@ -62,28 +62,45 @@ def create_transaction(self, *args, **kwargs):
                 id=request.data['company_name'])
             transaction_type = TransactionType.objects.get(
                 id=request.data['transaction_type'])
+            command_id = MpesaCommandId.objects.get(
+                id=request.data['command_id'])
+            occasion = Occasion.objects.get(id=request.data['occasion'])
+            amount = request.data['amount'],
+            comments = request.data['comments'],
+            phoneno = request.data['phoneno'],
             transaction = Transaction.objects.create(
-                amount=request.data['amount'],
-                comments=request.data['comments'],
-                phoneno=request.data['phoneno'],
+                amount=amount,
+                comments=comments,
+                phoneno=phoneno,
                 shortcode=shortcode,
+                command_id=command_id,
                 transaction_type=transaction_type,
-                initiator_name=initiator_name)
+                initiator_name=initiator_name,
+                occasion=occasion)
+            initiator = encryptInitiatorPassword()
+            c = CompanyShortCode.objects.filter(id=shortcode)
+            code = c['name']
+            n = InitiatorName.objects.filter(id=initiator_name)
+            name = n['name']
+            c_id = MpesaCommandId.objects.filter(id=command_id)
+            com_id = c_id['name']
+            occ = Occasion.objects.filter(id=occasion)
+
         except:
             raise Http404
         api_url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest"
         headers = {"Authorization": "Bearer %s" % access_token}
         request = {
-            "InitiatorName": initiator_name,
+            "InitiatorName": name,
             "SecurityCredential": initiator,
-            "CommandID": "BusinessPayment",
+            "CommandID": com_id,
             "Amount": amount,
-            "PartyA": shortcode,
+            "PartyA": code,
             "PartyB": phoneno,
             "Remarks": comments,
             "QueueTimeOutURL": "/",
             "ResultURL": "/",
-            "Occasion": ""
+            "Occasion": occ
         }
 
         response = requests.post(api_url, json=request, headers=headers)
