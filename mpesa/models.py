@@ -5,6 +5,13 @@ from django.utils.translation import ugettext_lazy as _
 # Create your models here.
 
 
+class Occassion(models.Model):
+    name = models.CharField(max_length=200, null=True)
+
+    def __str__(self):
+        return str(self.name)
+
+
 class MpesaCommandId(models.Model):
     name = models.CharField(max_length=200, null=True)
 
@@ -45,6 +52,8 @@ class Transaction(models.Model):
                                        related_name='company_name', null=True)
     shortcode = models.ForeignKey(CompanyShortCode,
                                   related_name='short_code')
+    occasion = models.ForeignKey(Occassion,
+                                 related_name='shortcode')
 
     def __str__(self):
         return str(self.transaction_type)
