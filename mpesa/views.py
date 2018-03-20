@@ -107,10 +107,14 @@ def create_b_to_c_transaction(self, *args, **kwargs):
         }
 
         response = requests.post(api_url, json=request, headers=headers)
-        transaction_feedback = response['ResponseDescription']
+        response_description = response['ResponseDescription']
+        originator_conversation_id = response['OriginatorConversationID ']
+        conversation_id = response['ConversationID']
         transaction_response = TransactionResponse.objects.create(
-            transaction_feedback=transaction_feedback,
-            transaction=transaction
+            transaction_feedback=response_description,
+            transaction=transaction,
+            originator_conversation_id=originator_conversation_id,
+            conversation_id=conversation_id
         )
     except:
         return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -182,10 +186,56 @@ def create_b_to_b_transaction(self, *args, **kwargs):
         }
 
         response = requests.post(api_url, json=request, headers=headers)
-        transaction_feedback = response['ResponseDescription']
+        response_description = response['ResponseDescription']
+        originator_conversation_id = response['OriginatorConversationID ']
+        conversation_id = response['ConversationID']
         transaction_response = TransactionResponse.objects.create(
-            transaction_feedback=transaction_feedback,
-            transaction=transaction
+            transaction_feedback=response_description,
+            transaction=transaction,
+            originator_conversation_id=originator_conversation_id,
+            conversation_id=conversation_id
+        )
+    except:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    return Response(responses, status=status.HTTP_201_CREATED)
+
+
+@api_view(['POST'])
+def create_c_2_b_url(self, *args, **kwargs):
+    # The C2B Register URL API registers the 3rd party’s confirmation and validation URLs to M-Pesa ;
+    # which then maps these URLs to the 3rd party shortcode.
+    # Whenever M-Pesa receives a transaction on the shortcode,
+    # M-Pesa triggers a validation request against the validation URL.
+    # The 3rd party system responds to M-Pesa with a validation response (either a success or an error code).
+    # The response expected is the success code the 3rd party
+    access_token = authenticate()
+    try:
+        try:
+            initiator_name = InitiatorName.objects.get(
+                id=request.data['company_name'])
+            party_b = CompanyCodeOrNumber.objects.get(
+                id=request.data['phone_no']),
+            transaction = Transaction.objects.create(
+                party_b=party_b,
+                initiator_name=initiator_name)
+        except:
+            raise Http404
+        api_url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest"
+        headers = {"Authorization": "Bearer %s" % access_token}
+        request = {"ShortCode": " ",
+                   "ResponseType": "json",
+                   "ConfirmationURL": "http://ip_address:port/confirmation",
+                   "ValidationURL": "http://ip_address:port/validation_url"}
+
+        response = requests.post(api_url, json=request, headers=headers)
+        response_description = response['ResponseDescription']
+        originator_conversation_id = response['OriginatorConversationID']
+        conversation_id = response['ConversationID']
+        transaction_response = TransactionResponse.objects.create(
+            transaction_feedback=response_description,
+            transaction=transaction,
+            originator_conversation_id=originator_conversation_id,
+            conversation_id=conversation_id
         )
     except:
         return Response(status=status.HTTP_400_BAD_REQUEST)
