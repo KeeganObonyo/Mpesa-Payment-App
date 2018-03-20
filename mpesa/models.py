@@ -97,3 +97,15 @@ class TransactionResponse(models.Model):
 
     def __str__(self):
         return str(self.response_description)
+
+
+class Registration(models.Model):
+    company_code = models.ForeignKey(
+        CompanyShortCodeOrNumber, related_name='CompanyShortCodeOrNumber', null=True)
+    company_name = models.ForeignKey(InitiatorName,
+                                     'InitiatorName', null=True)
+    confirmation_url = models.CharField(max_length=200, null=True, blank=True)
+    validation_url = models.CharField(max_length=200, null=True, blank=True)
+
+    def __str__(self):
+        return str(self.company_name)
