@@ -661,7 +661,7 @@ def create_mpesa_command_id(self, *args, **kwargs):
 
 @api_view(['POST'])
 def create_company_short_code_or_number(self, *args, **kwargs):
-    name = CompanyShortCode.objects.create(
+    name = CompanyShortCodeOrNumber.objects.create(
         name=request.data['short_code'])
     return Response(responses, status=status.HTTP_201_CREATED)
 
@@ -681,9 +681,11 @@ def create_transaction_type(self, *args, **kwargs):
 
 
 @api_view(['POST'])
-def create_customer_name(self, *args, **kwargs):
-    name = CustomerName.objects.create(
-        name=request.data['transaction_type'])
+def create_customer(self, *args, **kwargs):
+    number = CompanyShortCodeOrNumber.objects.get(id=request.data['number'])
+    name = Customer.objects.create(
+        name=request.data['transaction_type'],
+        number=number)
     return Response(responses, status=status.HTTP_201_CREATED)
 
 
@@ -694,29 +696,372 @@ def create_identifier_type(self, *args, **kwargs):
     return Response(response, status=status.HTTP_201_CREATED)
 
 
-# class OccasionListView(generics.ListAPIView):
-#     serializer_class = OccasionSerializer
-#     queryset = Occasion.objects.all()
+class OccasionListView(generics.ListAPIView):
+    serializer_class = OccasionSerializer
+    queryset = Occasion.objects.all()
 
-#     def list(self, request):
-#         try:
-#             occasions = Occasion.objects.all()
-#         except:
-#             raise Http404
-#         serializer = OccasionSerializer(
-#             occasions, many=True)
-#         return Response(serializer.data, status=status.HTTP_200_OK)
+    def list(self, request):
+        try:
+            occasions = Occasion.objects.all()
+        except:
+            raise Http404
+        serializer = OccasionSerializer(
+            occasions, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-# class MpesaCommandIdListView(generics.ListAPIView):
-#     serializer_class = MpesaCommandIdSerializer
-#     queryset = MpesaCommandId.objects.all()
+class OccasionDetailAPIView(DestroyModelMixin,
+                            UpdateModelMixin,
+                            generics.RetrieveAPIView)
 
-#     def list(self, request):
-#         try:
-#             command_ids = MpesaCommandId.objects.all()
-#         except:
-#             raise Http404
-#         serializer = MpesaCommandIderializer(
-#             command_ids, many=True)
-#         return Response(serializer.data, status=status.HTTP_200_OK)
+    def get_object(self, pk):
+        try:
+            return Occasion.objects.get(pk=pk)
+        except Occasion.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        serializer = OccasionSerializer(bio)
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        serializer = OccasionSerializer(
+            occasion, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, format=None):
+        try:
+            occasion = self.get_object(pk)
+            occasion.delete()
+        except:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class MpesaCommandIdListView(generics.ListAPIView):
+    serializer_class = MpesaCommandIdSerializer
+    queryset = MpesaCommandId.objects.all()
+
+    def list(self, request):
+        try:
+            command_ids = MpesaCommandId.objects.all()
+        except:
+            raise Http404
+        serializer = MpesaCommandIdSerializer(
+            command_ids, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class MpesaCommandIdDetailAPIView(DestroyModelMixin,
+                                  UpdateModelMixin,
+                                  generics.RetrieveAPIView):
+
+    def get_object(self, pk):
+        try:
+            return MpesaCommandId.objects.get(pk=pk)
+        except MpesaCommandId.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        serializer = MpesaCommandIdSerializer(bio)
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        serializer = MpesaCommandIdSerializer(
+            command_id, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, format=None):
+        try:
+            command_id = self.get_object(pk)
+            command_id.delete()
+        except:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class MpesaShortCodeOrNumberListView(generics.ListAPIView):
+    serializer_class = MpesaShortCodeOrNumberSerializer
+    queryset = MpesaShortCodeOrNumber.objects.all()
+
+    def list(self, request):
+        try:
+            mpesa_codes_or_nos = MpesaShortCodeOrNumber.objects.all()
+        except:
+            raise Http404
+        serializer = MpesaShortCodeOrNumberSerializer(
+            mpesa_codes_or_nos, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class MpesaShortCodeOrNumberDetailAPIView(DestroyModelMixin,
+                                          UpdateModelMixin,
+                                          generics.RetrieveAPIView):
+
+    def get_object(self, pk):
+        try:
+            return MpesaShortCodeOrNumber.objects.get(pk=pk)
+        except MpesaShortCodeOrNumber.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        serializer = MpesaShortCodeOrNumberSerializer(bio)
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        serializer = MpesaShortCodeOrNumberSerializer(
+            shortcode_or_no, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, format=None):
+        try:
+            shortcode_or_no = self.get_object(pk)
+            shortcode_or_no.delete()
+        except:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class InitiatorNameListView(generics.ListAPIView):
+    serializer_class = InitiatorNameSerializer
+    queryset = InitiatorName.objects.all()
+
+    def list(self, request):
+        try:
+            initiator_names = InitiatorName.objects.all()
+        except:
+            raise Http404
+        serializer = InitiatorNameSerializer(
+            initiator_names, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class InitiatorNameDetailAPIView(DestroyModelMixin,
+                                 UpdateModelMixin,
+                                 generics.RetrieveAPIView):
+
+    def get_object(self, pk):
+        try:
+            return InitiatorName.objects.get(pk=pk)
+        except InitiatorName.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        serializer = InitiatorNameSerializer(bio)
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        serializer = InitiatorNameSerializer(
+            initiator_name, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, format=None):
+        try:
+            initiator_name = self.get_object(pk)
+            initiator_name.delete()
+        except:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class TransactionTypeListView(generics.ListAPIView):
+    serializer_class = TransactionTypeSerializer
+    queryset = TransactionType.objects.all()
+
+    def list(self, request):
+        try:
+            transaction_types = TransactionType.objects.all()
+        except:
+            raise Http404
+        serializer = TransactionTypeSerializer(
+            transaction_types, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class TransactionTypeDetailAPIView(DestroyModelMixin,
+                                   UpdateModelMixin,
+                                   generics.RetrieveAPIView):
+
+    def get_object(self, pk):
+        try:
+            return TransactionType.objects.get(pk=pk)
+        except TransactionType.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        serializer = TransactionTypeSerializer(bio)
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        serializer = TransactionTypeSerializer(
+            transaction_type, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, format=None):
+        try:
+            transaction_type = self.get_object(pk)
+            transaction_type.delete()
+        except:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class CustomerListView(generics.ListAPIView):
+    serializer_class = CustomerSerializer
+    queryset = Customer.objects.all()
+
+    def list(self, request):
+        try:
+            customers = Customer.objects.all()
+        except:
+            raise Http404
+        serializer = CustomerSerializer(
+            customers, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class CustomerDetailAPIView(DestroyModelMixin,
+                            UpdateModelMixin,
+                            generics.RetrieveAPIView):
+
+    def get_object(self, pk):
+        try:
+            return Customer.objects.get(pk=pk)
+        except Customer.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        serializer = CustomerSerializer(bio)
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        serializer = CustomerSerializer(
+            customer, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, format=None):
+        try:
+            customer = self.get_object(pk)
+            customer.delete()
+        except:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class IdentifierTypeListView(generics.ListAPIView):
+    serializer_class = IdentifierTypeSerializer
+    queryset = IdentifierType.objects.all()
+
+    def list(self, request):
+        try:
+            identifier_types = IdentifierType.objects.all()
+        except:
+            raise Http404
+        serializer = IdentifierTypeSerializer(
+            identifier_types, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class IdentifierTypeDetailAPIView(DestroyModelMixin,
+                                  UpdateModelMixin,
+                                  generics.RetrieveAPIView):
+
+    def get_object(self, pk):
+        try:
+            return IdentifierType.objects.get(pk=pk)
+        except IdentifierType.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        serializer = IdentifierSerializer(bio)
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        serializer = IdentifierTypeSerializer(
+            identifier_type, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, format=None):
+        try:
+            identifier_type = self.get_object(pk)
+            identifier_type.delete()
+        except:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class TransactionListView(generics.ListAPIView):
+    serializer_class = TransactionSerializer
+    queryset = Transaction.objects.all()
+
+    def list(self, request):
+        try:
+            transactions = Transaction.objects.all()
+        except:
+            raise Http404
+        serializer = TransactionSerializer(
+            transactions, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class TransactionResponseListView(generics.ListAPIView):
+    serializer_class = TransactionResponseSerializer
+    queryset = TransactionResponse.objects.all()
+
+    def list(self, request):
+        try:
+            transaction_responses = TransactionResponse.objects.all()
+        except:
+            raise Http404
+        serializer = TransactionResponseSerializer(
+            transaction_responses, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class RegistrationListView(generics.ListAPIView):
+    serializer_class = RegistrationSerializer
+    queryset = Registration.objects.all()
+
+    def list(self, request):
+        try:
+            registrations = Registration.objects.all()
+        except:
+            raise Http404
+        serializer = RegistrationSerializer(
+            registrations, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
