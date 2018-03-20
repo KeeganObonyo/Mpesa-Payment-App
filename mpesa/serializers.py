@@ -45,6 +45,13 @@ class CustomerSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class OccassionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Occassion
+        fields = '__all__'
+
+
 class TransactionTypeSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -59,10 +66,10 @@ class InitiatorNameSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class MpesaShortCodeOrNumberSerializer(serializers.ModelSerializer):
+class CompanyShortCodeOrNumberSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = MpesaShortCodeOrNumber
+        model = CompanyShortCodeOrNumber
         fields = '__all__'
 
 

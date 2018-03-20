@@ -29,7 +29,7 @@ class CompanyShortCodeOrNumber(models.Model):
 class Customer(models.Model):
     name = models.CharField(max_length=200, null=True)
     number = models.ForeignKey(CompanyShortCodeOrNumber,
-                               related_name='CompanyShortCodeOrNumber', null=True)
+                               related_name='Customer', null=True)
 
     def __str__(self):
         return str(self.name)
@@ -65,11 +65,11 @@ class Transaction(models.Model):
                                         related_name='identifier_type', null=True)
     amount = models.DecimalField(null=True, decimal_places=2, max_digits=6)
     party_b = models.ForeignKey(CompanyShortCodeOrNumber,
-                                related_name='CompanyShortCodeOrNumber', null=True)
+                                related_name='party_b', null=True)
     initiator_name = models.ForeignKey(InitiatorName,
                                        related_name='company_name', null=True)
     party_a = models.ForeignKey(CompanyShortCodeOrNumber,
-                                related_name='short_code')
+                                related_name='party_a')
     occasion = models.ForeignKey(Occassion,
                                  related_name='shortcode')
     account_reference = models.ForeignKey(MpesaCommandId,
@@ -113,7 +113,7 @@ class Registration(models.Model):
     company_code = models.ForeignKey(
         CompanyShortCodeOrNumber, related_name='CompanyShortCodeOrNumber', null=True)
     company_name = models.ForeignKey(InitiatorName,
-                                     'InitiatorName', null=True)
+                                     related_name='registration', null=True)
     confirmation_url = models.CharField(max_length=200, null=True, blank=True)
     validation_url = models.CharField(max_length=200, null=True, blank=True)
 

@@ -4,6 +4,16 @@ from rest_framework.decorators import *
 from rest_framework.renderers import *
 from rest_framework.response import Response
 from .models import *
+from .serializers import *
+from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin
+from rest_framework.generics import (
+    CreateAPIView,
+    DestroyAPIView,
+    ListAPIView,
+    UpdateAPIView,
+    RetrieveAPIView,
+    RetrieveUpdateAPIView
+)
 import json
 from django.http import Http404
 # from m2rypto import RSA, X509
@@ -333,15 +343,16 @@ def check_account_balance(self, *args, **kwargs):
         result_description = response['ResultDesc']
         result_code = response['ResultCode']
         transaction_response = TransactionResponse.objects.create(
-                transaction_feedback=response_description,
-                transaction=transaction,
-                originator_conversation_id=originator_conversation_id,
-                conversation_id=conversation_id,
-                merchant_request_id=merchant_request_id,
-                checkout_request_id=checkout_request_id,
-                response_code=response_code,
-                result_description=result_description,
-                result_code=result_code) except:
+            transaction_feedback=response_description,
+            transaction=transaction,
+            originator_conversation_id=originator_conversation_id,
+            conversation_id=conversation_id,
+            merchant_request_id=merchant_request_id,
+            checkout_request_id=checkout_request_id,
+            response_code=response_code,
+            result_description=result_description,
+            result_code=result_code)
+    except:
         return Response(status=status.HTTP_400_BAD_REQUEST)
     return Response(responses, status=status.HTTP_201_CREATED)
 
@@ -697,12 +708,12 @@ def create_identifier_type(self, *args, **kwargs):
 
 
 class OccasionListView(generics.ListAPIView):
-    serializer_class = OccasionSerializer
-    queryset = Occasion.objects.all()
+    serializer_class = OccassionSerializer
+    queryset = Occassion.objects.all()
 
     def list(self, request):
         try:
-            occasions = Occasion.objects.all()
+            occassions = Occassion.objects.all()
         except:
             raise Http404
         serializer = OccasionSerializer(
@@ -712,21 +723,21 @@ class OccasionListView(generics.ListAPIView):
 
 class OccasionDetailAPIView(DestroyModelMixin,
                             UpdateModelMixin,
-                            generics.RetrieveAPIView)
+                            generics.RetrieveAPIView):
 
     def get_object(self, pk):
         try:
-            return Occasion.objects.get(pk=pk)
-        except Occasion.DoesNotExist:
+            return Occassion.objects.get(pk=pk)
+        except Occassion.DoesNotExist:
             raise Http404
 
     def get(self, request, pk, format=None):
-        serializer = OccasionSerializer(bio)
+        serializer = OccassionSerializer(bio)
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
         serializer = OccasionSerializer(
-            occasion, data=request.data)
+            occassion, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -737,8 +748,8 @@ class OccasionDetailAPIView(DestroyModelMixin,
 
     def delete(self, request, pk, format=None):
         try:
-            occasion = self.get_object(pk)
-            occasion.delete()
+            occassion = self.get_object(pk)
+            occassion.delete()
         except:
             return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -791,16 +802,16 @@ class MpesaCommandIdDetailAPIView(DestroyModelMixin,
 
 
 class MpesaShortCodeOrNumberListView(generics.ListAPIView):
-    serializer_class = MpesaShortCodeOrNumberSerializer
-    queryset = MpesaShortCodeOrNumber.objects.all()
+    serializer_class = CompanyShortCodeOrNumberSerializer
+    queryset = CompanyShortCodeOrNumber.objects.all()
 
     def list(self, request):
         try:
-            mpesa_codes_or_nos = MpesaShortCodeOrNumber.objects.all()
+            company_codes_or_nos = CompanyShortCodeOrNumber.objects.all()
         except:
             raise Http404
-        serializer = MpesaShortCodeOrNumberSerializer(
-            mpesa_codes_or_nos, many=True)
+        serializer = CompanyShortCodeOrNumberSerializer(
+            company_codes_or_nos, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -810,17 +821,17 @@ class MpesaShortCodeOrNumberDetailAPIView(DestroyModelMixin,
 
     def get_object(self, pk):
         try:
-            return MpesaShortCodeOrNumber.objects.get(pk=pk)
-        except MpesaShortCodeOrNumber.DoesNotExist:
+            return CompanyShortCodeOrNumber.objects.get(pk=pk)
+        except CompanyShortCodeOrNumber.DoesNotExist:
             raise Http404
 
     def get(self, request, pk, format=None):
-        serializer = MpesaShortCodeOrNumberSerializer(bio)
+        serializer = CompanyShortCodeOrNumberSerializer(bio)
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
-        serializer = MpesaShortCodeOrNumberSerializer(
-            shortcode_or_no, data=request.data)
+        serializer = CompanyShortCodeOrNumberSerializer(
+            companycode_or_no, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -831,8 +842,8 @@ class MpesaShortCodeOrNumberDetailAPIView(DestroyModelMixin,
 
     def delete(self, request, pk, format=None):
         try:
-            shortcode_or_no = self.get_object(pk)
-            shortcode_or_no.delete()
+            companycode_or_no = self.get_object(pk)
+            companycode_or_no.delete()
         except:
             return Response(status=status.HTTP_204_NO_CONTENT)
 
