@@ -26,8 +26,10 @@ class CompanyShortCodeOrNumber(models.Model):
         return str(self.name)
 
 
-class CustomerName(models.Model):
+class Customer(models.Model):
     name = models.CharField(max_length=200, null=True)
+    number = models.ForeignKey(CompanyShortCodeOrNumber,
+                               related_name='CompanyShortCodeOrNumber', null=True)
 
     def __str__(self):
         return str(self.name)
