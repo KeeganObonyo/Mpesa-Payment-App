@@ -295,6 +295,74 @@ def check_account_balance(self, *args, **kwargs):
 
 
 @api_view(['POST'])
+def check_transaction_status(self, *args, **kwargs):
+    # company to company transaction based on short codes
+    access_token = authenticate()
+    try:
+        try:
+            party_a = CompanyCodeOrNumber.objects.get(
+                id=request.data['create_company_short_code_or_number'])
+            initiator_name = InitiatorName.objects.get(
+                id=request.data['company_name'])
+            transaction_type = TransactionType.objects.get(
+                id=request.data['transaction_type'])
+            command_id = MpesaCommandId.objects.get(
+                id=request.data['command_id'])
+            amount = request.data['amount'],
+            remarks = request.data['remarks'],
+            party_b = CompanyCodeOrNumber.objects.get(
+                id=request.data['phone_no']),
+            transaction = Transaction.objects.create(
+                amount=amount,
+                remarks=remarks,
+                party_b=party_b,
+                Party_a=Party_a,
+                command_id=command_id,
+                transaction_type=transaction_type,
+                initiator_name=initiator_name,
+                occasion=occasion)
+            initiator = encryptInitiatorPassword()
+            com_id = MpesaCommandId.objects.filter(
+                id=command_id).value('name')
+            party_a = CompanyCodeOrNumber.objects.filter(
+                id=party_a).value('name')
+            party_b = CompanyCodeOrNumber.objects.filter(
+                id=party_b).value('name')
+            name = InitiatorName.objects.filter(
+                id=initiator_name).value('name')
+            occ = Occasion.objects.filter(id=occasion).value('name')
+        except:
+            raise Http404
+        api_url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest"
+        headers = {"Authorization": "Bearer %s" % access_token}
+        request = {
+            "Initiator": name,
+            "SecurityCredential": initiator,
+            "CommandID": com_id,
+            "TransactionID": party_b,
+            "PartyA": party_a,
+            "IdentifierType": "1",
+            "ResultURL": "https://ip_address:port/result_url",
+            "QueueTimeOutURL": "https://ip_address:port/timeout_url",
+            "Remarks": remarks
+        }
+
+        response = requests.post(api_url, json=request, headers=headers)
+        response_description = response['ResponseDescription']
+        originator_conversation_id = response['OriginatorConversationID ']
+        conversation_id = response['ConversationID']
+        transaction_response = TransactionResponse.objects.create(
+            transaction_feedback=response_description,
+            transaction=transaction,
+            originator_conversation_id=originator_conversation_id,
+            conversation_id=conversation_id
+        )
+    except:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    return Response(responses, status=status.HTTP_201_CREATED)
+
+
+@api_view(['POST'])
 def create_occasion(self, *args, **kwargs):
     occasion = Occasion.objects.create(name=request.data['occasions'])
     return Response(responses, status=status.HTTP_201_CREATED)
