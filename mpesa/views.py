@@ -586,6 +586,68 @@ def initiate_lipa_na_mpesa_online_transaction(self, *args, **kwargs):
 
 
 @api_view(['POST'])
+def query_lipa_na_mpesa_online_transaction_status(self, *args, **kwargs):
+    # Lipa na M-Pesa Online Payment API is
+    # used to initiate a M-Pesa transaction
+    # on behalf of a customer using STK Push
+    access_token = authenticate()
+    try:
+        try:
+            initiator_name = InitiatorName.objects.get(
+                id=request.data['company_name'])
+            transaction_type = TransactionType.objects.get(
+                id=request.data['transaction_type'])
+            party_b = CompanyCodeOrNumber.objects.get(
+                id=request.data['phone_no']),
+            transaction = Transaction.objects.create(
+                amount=amount,
+                remarks=remarks,
+                party_b=party_b,
+                transaction_type=transaction_type,
+                initiator_name=initiator_name)
+            code_b = CompanyCodeOrNumber.objects.filter(
+                id=party_b).value('name')
+            old_transaction = Transaction.objects.filter(
+                id=transaction_old)
+            time = old_transaction['created']
+
+        except:
+            raise Http404
+        password = Password(code_b, time)
+        api_url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest"
+        headers = {"Authorization": "Bearer %s" % access_token}
+        request = {
+            "BusinessShortCode": code_b,
+            "Password": password,
+            "Timestamp": time,
+            "CheckoutRequestID": checkout_request_ids,
+        }
+
+        response = requests.post(api_url, json=request, headers=headers)
+        response_description = response['ResponseDescription']
+        originator_conversation_id = response['OriginatorConversationID ']
+        conversation_id = response['ConversationID']
+        merchant_request_id = response['MerchantRequestID']
+        checkout_request_id = response['CheckoutRequestID']
+        response_code = response['ResponseCode']
+        result_description = response['ResultDesc']
+        result_code = response['ResultCode']
+        transaction_response = TransactionResponse.objects.create(
+            transaction_feedback=response_description,
+            transaction=transaction,
+            originator_conversation_id=originator_conversation_id,
+            conversation_id=conversation_id,
+            merchant_request_id=merchant_request_id,
+            checkout_request_id=checkout_request_id,
+            response_code=response_code,
+            result_description=result_description,
+            result_code=result_code)
+    except:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    return Response(responses, status=status.HTTP_201_CREATED)
+
+
+@api_view(['POST'])
 def create_occasion(self, *args, **kwargs):
     occasion = Occasion.objects.create(name=request.data['occasions'])
     return Response(responses, status=status.HTTP_201_CREATED)
