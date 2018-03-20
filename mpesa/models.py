@@ -62,12 +62,12 @@ class Transaction(models.Model):
     identifier_type = models.ForeignKey(IdentifierType,
                                         related_name='identifier_type', null=True)
     amount = models.DecimalField(null=True, decimal_places=2, max_digits=6)
-    partyB = models.ForeignKey(CompanyShortCodeOrNumber,
-                               related_name='CompanyShortCodeOrNumber', null=True)
+    party_b = models.ForeignKey(CompanyShortCodeOrNumber,
+                                related_name='CompanyShortCodeOrNumber', null=True)
     initiator_name = models.ForeignKey(InitiatorName,
                                        related_name='company_name', null=True)
-    partyA = models.ForeignKey(CompanyShortCodeOrNumber,
-                               related_name='short_code')
+    party_a = models.ForeignKey(CompanyShortCodeOrNumber,
+                                related_name='short_code')
     occasion = models.ForeignKey(Occassion,
                                  related_name='shortcode')
     account_reference = models.ForeignKey(MpesaCommandId,
