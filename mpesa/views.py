@@ -80,16 +80,14 @@ def create_b_to_c_transaction(self, *args, **kwargs):
                 initiator_name=initiator_name,
                 occasion=occasion)
             initiator = encryptInitiatorPassword()
-            c = CompanyCodeOrNumber.objects.filter(id=party_a)
-            code_a = c['name']
-            c1 = CompanyCodeOrNumber.objects.filter(id=party_b)
-            code_b = c1['name']
-            n = InitiatorName.objects.filter(id=initiator_name)
-            name = n['name']
-            c_id = MpesaCommandId.objects.filter(id=command_id)
-            com_id = c_id['name']
-            oc = Occasion.objects.filter(id=occasion)
-            occ = oc['name']
+            code_a = CompanyCodeOrNumber.objects.filter(
+                id=party_a).value('name')
+            code_b = CompanyCodeOrNumber.objects.filter(
+                id=party_b).value('name')
+            name = InitiatorName.objects.filter(
+                id=initiator_name).value('name')
+            com_id = MpesaCommandId.objects.filter(id=command_id).value('name')
+            occ = Occasion.objects.filter(id=occasion).value('name')
 
         except:
             raise Http404
@@ -152,20 +150,18 @@ def create_b_to_b_transaction(self, *args, **kwargs):
                 initiator_name=initiator_name,
                 occasion=occasion)
             initiator = encryptInitiatorPassword()
-            ci = MpesaCommandId.objects.filter(id=command_id)
-            com_id = ci['names']
-            c = CompanyCodeOrNumber.objects.filter(id=party_a)
-            code_a = c['name']
-            c1 = CompanyCodeOrNumber.objects.filter(id=party_b)
-            code_b = c1['name']
-            n = InitiatorName.objects.filter(id=initiator_name)
-            name = n['name']
-            c_id = MpesaCommandId.objects.filter(id=command_id)
-            com_id = c_id['name']
-            id_a = IdentifierType.objects.filte(id=identifier_type_a)
-            id_type_a = id_a['name']
-            id_b = IdentifierType.objects.filte(id=identifier_type_a)
-            id_type_b = id_b['name']
+            com_id = MpesaCommandId.objects.filter(
+                id=command_id).value('name')
+            party_a = CompanyCodeOrNumber.objects.filter(
+                id=party_a).value('name')
+            party_b = CompanyCodeOrNumber.objects.filter(
+                id=party_b).value('name')
+            name = InitiatorName.objects.filter(
+                id=initiator_name).value('name')
+            id_type_a = IdentifierType.objects.filte(
+                id=identifier_type_a).value('name')
+            id_type_b = IdentifierType.objects.filte(
+                id=identifier_type_a).value('name')
         except:
             raise Http404
         api_url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest"
@@ -173,7 +169,7 @@ def create_b_to_b_transaction(self, *args, **kwargs):
         request = {
             "Initiator": name,
             "SecurityCredential": initiator,
-            "CommandID": c_id,
+            "CommandID": com_id,
             "SenderIdentifierType": id_type_a,
             "RecieverIdentifierType": id_type_b,
             "Amount": amount,
