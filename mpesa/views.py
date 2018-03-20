@@ -201,7 +201,7 @@ def create_b_to_b_transaction(self, *args, **kwargs):
 
 
 @api_view(['POST'])
-def create_c_2_b_url(self, *args, **kwargs):
+def register_c_2_b_url(self, *args, **kwargs):
     # The C2B Register URL API registers the 3rd party’s confirmation and validation URLs to M-Pesa ;
     # which then maps these URLs to the 3rd party shortcode.
     # Whenever M-Pesa receives a transaction on the shortcode,
@@ -215,28 +215,80 @@ def create_c_2_b_url(self, *args, **kwargs):
                 id=request.data['company_name'])
             party_b = CompanyCodeOrNumber.objects.get(
                 id=request.data['phone_no']),
+            confirmation_url = request.data['confirmation_url']
+            validation_url = request.data['confirmation_url']
+            registration = Registration.objects.create(
+                company=party_b,
+                initiator_name=name,
+                confirmation_url=confirmation_url,
+                validation_url=validation_url)
+        except:
+            raise Http404
+            party_b = CompanyCodeOrNumber.objects.filter(
+                id=party_b).value('name')
+
+        api_url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest"
+        headers = {"Authorization": "Bearer %s" % access_token}
+        request = {"ShortCode": party_b,
+                   "ResponseType": "json",
+                   "ConfirmationURL": confirmation_url,
+                   #"http://ip_address:port/confirmation",
+                   "ValidationURL": validation_url,
+                   # "http://ip_address:port/validation_url"
+                   }
+        response = requests.post(api_url, json=request, headers=headers)
+        response_description = response['ResponseDescription']
+        transaction_response = TransactionResponse.objects.create(
+            response_description=response_description)
+    except:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    return Response(responses, status=status.HTTP_201_CREATED)
+
+
+@api_view(['POST'])
+def check_account_balance(self, *args, **kwargs):
+    # company to company transaction based on short codes
+    access_token = authenticate()
+    try:
+        try:
+            party_a = CompanyCodeOrNumber.objects.get(
+                id=request.data['company_short_code'])
+            initiator_name = InitiatorName.objects.get(
+                id=request.data['company_name'])
+            command_id = MpesaCommandId.objects.get(
+                id=request.data['command_id'])
+            remarks = request.data['remarks'],
+            command_id = MpesaCommandId.objects.get(
+                id=request.data['command_id'])
             transaction = Transaction.objects.create(
-                party_b=party_b,
+                command_id=command_id,
+                Party_a=Party_a,
                 initiator_name=initiator_name)
+            initiator = encryptInitiatorPassword()
+            com_id = MpesaCommandId.objects.filter(
+                id=command_id).value('name')
+            party_a = CompanyCodeOrNumber.objects.filter(
+                id=party_a).value('name')
+            name = InitiatorName.objects.filter(
+                id=initiator_name).value('name')
         except:
             raise Http404
         api_url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest"
         headers = {"Authorization": "Bearer %s" % access_token}
-        request = {"ShortCode": " ",
-                   "ResponseType": "json",
-                   "ConfirmationURL": "http://ip_address:port/confirmation",
-                   "ValidationURL": "http://ip_address:port/validation_url"}
-
+        request = {"Initiator": name,
+                   "SecurityCredential": initiator,
+                   "CommandID": com_id,
+                   "PartyA": party_a,
+                   "IdentifierType": "4",
+                   "Remarks": remarks,
+                   "QueueTimeOutURL": "https://ip_address:port/timeout_url",
+                   "ResultURL": "https://ip_address:port/result_url"
+                   }
         response = requests.post(api_url, json=request, headers=headers)
         response_description = response['ResponseDescription']
-        originator_conversation_id = response['OriginatorConversationID']
-        conversation_id = response['ConversationID']
         transaction_response = TransactionResponse.objects.create(
-            transaction_feedback=response_description,
-            transaction=transaction,
-            originator_conversation_id=originator_conversation_id,
-            conversation_id=conversation_id
-        )
+            response_description=response_description,
+            transaction=transaction)
     except:
         return Response(status=status.HTTP_400_BAD_REQUEST)
     return Response(responses, status=status.HTTP_201_CREATED)
