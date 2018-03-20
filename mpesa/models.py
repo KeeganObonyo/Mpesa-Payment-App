@@ -94,6 +94,14 @@ class TransactionResponse(models.Model):
 
     transaction = models.ForeignKey(Transaction,
                                     related_name='response', null=True)
+    merchant_request_id = models.CharField(
+        max_length=200, null=True, blank=True)
+    checkout_request_id = models.CharField(
+        max_length=200, null=True, blank=True)
+    response_code = models.CharField(max_length=200, null=True, blank=True)
+    result_description = models.CharField(
+        max_length=200, null=True, blank=True)
+    result_code = models.CharField(max_length=200, null=True, blank=True)
 
     def __str__(self):
         return str(self.response_description)
