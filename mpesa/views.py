@@ -662,8 +662,8 @@ def query_lipa_na_mpesa_online_transaction_status(self, *args, **kwargs):
 
 
 @api_view(['POST'])
-def create_occasion(self, *args, **kwargs):
-    occasion = Occasion.objects.create(name=request.data['occasions'])
+def create_occassion(self, *args, **kwargs):
+    occassion = Occassion.objects.create(name=request.data['occasions'])
     return Response(responses, status=status.HTTP_201_CREATED)
 
 

@@ -3,52 +3,89 @@ from django.conf.urls import url
 from .views import *
 
 urlpatterns = [
-    url(r'^get_token/$',
+    url(r'^get/token/$',
         view=authenticate,
-        name="get-mpesa-token-request",),
-    # url(r'^create_response/$',
-    #     view=transactions_record,
-    #     name="add-transaction-response",),
-    url(r'^create_b_to_b_transaction/$',
+        name="mpesa/token/request",),
+    url(r'^b2b/transaction/$',
         view=create_b_to_b_transaction,
-        name="create_transaction",),
+        name="create_b_2_b_transaction",),
+    url(r'^b2c/transaction/$',
+        view=create_b_to_c_transaction,
+        name="create_b_2_c_transaction",),
+    url(r'^register/c2b/url/$',
+        view=register_c_2_b_url,
+        name="register_c_2_b_url",),
+    url(r'^accountbalance/transaction/$',
+        view=check_account_balance,
+        name="check_account_balance",),
+    url(r'^check/transaction/status/$',
+        view=check_transaction_status,
+        name="check_transaction_status",),
+    url(r'^reversal/transaction$',
+        view=transaction_reversal,
+        name="transaction_reversal",),
+    url(r'^lipanampesa/online/$',
+        view=initiate_lipa_na_mpesa_online_transaction,
+        name="initiate_lipa_na_mpesa_online_transaction",),
+    url(r'^lipanampesa/online/transaction/status$',
+        view=query_lipa_na_mpesa_online_transaction_status,
+        name="query_lipa_na_mpesa_online_transaction_statuss",),
+    url(r'^create/occassion/$',
+        view=create_occassion,
+        name="create_occasion",),
+    url(r'^create/mpesa/command/id/$',
+        view=create_mpesa_command_id,
+        name="create_mpesa_command_id",),
+    url(r'^create/company/shortcodeornumber/$',
+        view=create_company_short_code_or_number,
+        name="create_company_short_code_or_number",),
+    url(r'^create/initiator/name/$',
+        view=create_initiator_name,
+        name="create_initiator_name",),
+    url(r'^create/transaction/type/$',
+        view=create_transaction_type,
+        name="create_transaction_type",),
+    url(r'^create/customer/$',
+        view=create_customer,
+        name="create_customer",),
+    url(r'^create/identifier/type/$',
+        view=create_identifier_type,
+        name="create_identifier_type",),
+
+    url(r'^occassion/detail/(?P<pk>\d+)/$',
+        OccasionDetailAPIView.as_view(), name='thread'),
+    url(r'^mpesa/commandid/detail/(?P<pk>\d+)/$',
+        MpesaCommandIdDetailAPIView.as_view(), name='thread'),
+    url(r'^mpesa/shortcodeornumber/detail/(?P<pk>\d+)/$',
+        MpesaShortCodeOrNumberDetailAPIView.as_view(), name='thread'),
+    url(r'^initiator/name/detail/(?P<pk>\d+)/$',
+        InitiatorNameDetailAPIView.as_view(), name='thread'),
+    url(r'^transaction/type/detail/(?P<pk>\d+)/$',
+        TransactionTypeDetailAPIView.as_view(), name='thread'),
+    url(r'^customer/detail/(?P<pk>\d+)/$',
+        CustomerDetailAPIView.as_view(), name='thread'),
+    url(r'^identifier/type/detail/(?P<pk>\d+)/$',
+        IdentifierTypeDetailAPIView.as_view(), name='thread'),
+
+    url(r'^occassion/list/$',
+        OccasionListView.as_view(), name='occassion-list'),
+    url(r'^mpesacommandid/list/$',
+        MpesaCommandIdListView.as_view(), name='mpesa-commandid-list'),
+    url(r'^shortcodeornumber/list/$',
+        MpesaShortCodeOrNumberListView.as_view(), name='shortcodeornumber-list'),
+    url(r'^initiatorname/list/$',
+        InitiatorNameListView.as_view(), name='initiatorname-list'),
+    url(r'^transactiontype/list/$',
+        TransactionTypeListView.as_view(), name='transactiontype-list'),
+    url(r'^customer/list/$',
+        CustomerListView.as_view(), name='customer-list'),
+    url(r'^identifiertype/list/$',
+        IdentifierTypeListView.as_view(), name='identifiertype-list'),
+    url(r'^transaction/list/$',
+        TransactionListView.as_view(), name='transaction-list'),
+    url(r'^transactionresponse/list/$',
+        TransactionResponseListView.as_view(), name='transactionresponse-list'),
+    url(r'^registration/list/$',
+        RegistrationListView.as_view(), name='registration-list'),
 ]
 urlpatterns = format_suffix_patterns(urlpatterns, allowed=['json'])
-
-# url end points to be effected
-
-# create_b_to_c_transaction
-# create_b_to_b_transaction
-# register_c_2_b_url
-# check_account_balance
-# check_transaction_status
-# transaction_reversal
-# initiate_lipa_na_mpesa_online_transaction
-# query_lipa_na_mpesa_online_transaction_status
-
-# create_occasion
-# create_mpesa_command_id
-# create_company_short_code_or_number
-# create_initiator_name
-# create_transaction_type
-# create_customer
-# create_identifier_type
-
-# OccasionDetailAPIView
-# MpesaCommandIdDetailAPIView
-# MpesaShortCodeOrNumberDetailAPIView
-# InitiatorNameDetailAPIView
-# TransactionTypeDetailAPIView
-# CustomerDetailAPIView
-# IdentifierTypeDetailAPIView
-
-# OccasionListView
-# MpesaCommandIdListView
-# MpesaShortCodeOrNumberListView
-# InitiatorNameListView
-# TransactionTypeListView
-# CustomerListView
-# IdentifierTypeListView
-# TransactionListView
-# TransactionResponseListView
-# RegistrationListView
