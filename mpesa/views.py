@@ -97,13 +97,14 @@ def create_b_to_c_transaction(self, *args, **kwargs):
                 occasion=occasion)
             initiator = encryptInitiatorPassword()
             code_a = CompanyCodeOrNumber.objects.filter(
-                id=party_a).value('name')
+                id=party_a).values('name')
             code_b = CompanyCodeOrNumber.objects.filter(
-                id=party_b).value('name')
+                id=party_b).values('name')
             name = InitiatorName.objects.filter(
-                id=initiator_name).value('name')
-            com_id = MpesaCommandId.objects.filter(id=command_id).value('name')
-            occ = Occasion.objects.filter(id=occasion).value('name')
+                id=initiator_name).values('name')
+            com_id = MpesaCommandId.objects.filter(
+                id=command_id).values('name')
+            occ = Occasion.objects.filter(id=occasion).values('name')
 
         except:
             raise Http404
@@ -180,17 +181,17 @@ def create_b_to_b_transaction(self, *args, **kwargs):
                 occasion=occasion)
             initiator = encryptInitiatorPassword()
             com_id = MpesaCommandId.objects.filter(
-                id=command_id).value('name')
+                id=command_id).values('name')
             party_a = CompanyCodeOrNumber.objects.filter(
-                id=party_a).value('name')
+                id=party_a).values('name')
             party_b = CompanyCodeOrNumber.objects.filter(
-                id=party_b).value('name')
+                id=party_b).values('name')
             name = InitiatorName.objects.filter(
-                id=initiator_name).value('name')
-            id_type_a = IdentifierType.objects.filte(
-                id=identifier_type_a).value('name')
-            id_type_b = IdentifierType.objects.filte(
-                id=identifier_type_a).value('name')
+                id=initiator_name).values('name')
+            id_type_a = IdentifierType.objects.filter(
+                id=identifier_type_a).values('name')
+            id_type_b = IdentifierType.objects.filter(
+                id=identifier_type_a).values('name')
         except:
             raise Http404
         api_url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest"
@@ -259,7 +260,7 @@ def register_c_2_b_url(self, *args, **kwargs):
         except:
             raise Http404
             party_b = CompanyCodeOrNumber.objects.filter(
-                id=party_b).value('name')
+                id=party_b).values('name')
 
         api_url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest"
         headers = {"Authorization": "Bearer %s" % access_token}
@@ -315,11 +316,11 @@ def check_account_balance(self, *args, **kwargs):
                 initiator_name=initiator_name)
             initiator = encryptInitiatorPassword()
             com_id = MpesaCommandId.objects.filter(
-                id=command_id).value('name')
+                id=command_id).values('name')
             party_a = CompanyCodeOrNumber.objects.filter(
-                id=party_a).value('name')
+                id=party_a).values('name')
             name = InitiatorName.objects.filter(
-                id=initiator_name).value('name')
+                id=initiator_name).values('name')
         except:
             raise Http404
         api_url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest"
@@ -386,14 +387,14 @@ def check_transaction_status(self, *args, **kwargs):
                 occasion=occasion)
             initiator = encryptInitiatorPassword()
             com_id = MpesaCommandId.objects.filter(
-                id=command_id).value('name')
+                id=command_id).values('name')
             party_a = CompanyCodeOrNumber.objects.filter(
-                id=party_a).value('name')
+                id=party_a).values('name')
             party_b = CompanyCodeOrNumber.objects.filter(
-                id=party_b).value('name')
+                id=party_b).values('name')
             name = InitiatorName.objects.filter(
-                id=initiator_name).value('name')
-            occ = Occasion.objects.filter(id=occasion).value('name')
+                id=initiator_name).values('name')
+            occ = Occasion.objects.filter(id=occasion).values('name')
         except:
             raise Http404
         api_url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest"
@@ -464,12 +465,13 @@ def transaction_reversal(self, *args, **kwargs):
                 occasion=occasion)
             initiator = encryptInitiatorPassword()
             code_a = CompanyCodeOrNumber.objects.filter(
-                id=party_a).value('name')
+                id=party_a).values('name')
             code_b = CompanyCodeOrNumber.objects.filter(
-                id=party_b).value('name')
+                id=party_b).values('name')
             name = InitiatorName.objects.filter(
-                id=initiator_name).value('name')
-            com_id = MpesaCommandId.objects.filter(id=command_id).value('name')
+                id=initiator_name).values('name')
+            com_id = MpesaCommandId.objects.filter(
+                id=command_id).values('name')
 
         except:
             raise Http404
@@ -542,14 +544,15 @@ def initiate_lipa_na_mpesa_online_transaction(self, *args, **kwargs):
                 transaction_type=transaction_type,
                 initiator_name=initiator_name)
             code_a = CompanyCodeOrNumber.objects.filter(
-                id=party_a).value('name')
+                id=party_a).values('name')
             code_b = CompanyCodeOrNumber.objects.filter(
-                id=party_b).value('name')
+                id=party_b).values('name')
             name = InitiatorName.objects.filter(
-                id=initiator_name).value('name')
-            com_id = MpesaCommandId.objects.filter(id=command_id).value('name')
+                id=initiator_name).values('name')
+            com_id = MpesaCommandId.objects.filter(
+                id=command_id).values('name')
             t_type = TransactionType.objects.filter(
-                id=transaction_type).value('name')
+                id=transaction_type).values('name')
             current_transaction = Transaction.objects.filter(id=transaction)
             time = current_transaction['created']
 
@@ -617,7 +620,7 @@ def query_lipa_na_mpesa_online_transaction_status(self, *args, **kwargs):
                 transaction_type=transaction_type,
                 initiator_name=initiator_name)
             code_b = CompanyCodeOrNumber.objects.filter(
-                id=party_b).value('name')
+                id=party_b).values('name')
             old_transaction = Transaction.objects.filter(
                 id=transaction_old)
             time = old_transaction['created']
