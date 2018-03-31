@@ -97,14 +97,15 @@ def create_b_to_c_transaction(self, *args, **kwargs):
                 occasion=occasion)
             initiator = encryptInitiatorPassword()
             code_a = CompanyCodeOrNumber.objects.filter(
-                id=party_a).values('name')
+                id=party_a).values('name')[0]['name']
             code_b = CompanyCodeOrNumber.objects.filter(
-                id=party_b).values('name')
+                id=party_b).values('name')[0]['name']
             name = InitiatorName.objects.filter(
-                id=initiator_name).values('name')
+                id=initiator_name).values('name')[0]['name']
             com_id = MpesaCommandId.objects.filter(
-                id=command_id).values('name')
-            occ = Occasion.objects.filter(id=occasion).values('name')
+                id=command_id).values('name')[0]['name']
+            occ = Occasion.objects.filter(
+                id=occasion).values('name')[0]['name']
 
         except:
             raise Http404
@@ -181,17 +182,17 @@ def create_b_to_b_transaction(self, *args, **kwargs):
                 occasion=occasion)
             initiator = encryptInitiatorPassword()
             com_id = MpesaCommandId.objects.filter(
-                id=command_id).values('name')
+                id=command_id).values('name')[0]['name']
             party_a = CompanyCodeOrNumber.objects.filter(
-                id=party_a).values('name')
+                id=party_a).values('name')[0]['name']
             party_b = CompanyCodeOrNumber.objects.filter(
-                id=party_b).values('name')
+                id=party_b).values('name')[0]['name']
             name = InitiatorName.objects.filter(
-                id=initiator_name).values('name')
+                id=initiator_name).values('name')[0]['name']
             id_type_a = IdentifierType.objects.filter(
-                id=identifier_type_a).values('name')
+                id=identifier_type_a).values('name')[0]['name']
             id_type_b = IdentifierType.objects.filter(
-                id=identifier_type_a).values('name')
+                id=identifier_type_a).values('name')[0]['name']
         except:
             raise Http404
         api_url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest"
@@ -260,7 +261,7 @@ def register_c_2_b_url(self, *args, **kwargs):
         except:
             raise Http404
             party_b = CompanyCodeOrNumber.objects.filter(
-                id=party_b).values('name')
+                id=party_b).values('name')[0]['name']
 
         api_url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest"
         headers = {"Authorization": "Bearer %s" % access_token}
@@ -316,11 +317,11 @@ def check_account_balance(self, *args, **kwargs):
                 initiator_name=initiator_name)
             initiator = encryptInitiatorPassword()
             com_id = MpesaCommandId.objects.filter(
-                id=command_id).values('name')
+                id=command_id).values('name')[0]['name']
             party_a = CompanyCodeOrNumber.objects.filter(
-                id=party_a).values('name')
+                id=party_a).values('name')[0]['name']
             name = InitiatorName.objects.filter(
-                id=initiator_name).values('name')
+                id=initiator_name).values('name')[0]['name']
         except:
             raise Http404
         api_url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest"
@@ -387,14 +388,13 @@ def check_transaction_status(self, *args, **kwargs):
                 occasion=occasion)
             initiator = encryptInitiatorPassword()
             com_id = MpesaCommandId.objects.filter(
-                id=command_id).values('name')
+                id=command_id).values('name')[0]['name']
             party_a = CompanyCodeOrNumber.objects.filter(
-                id=party_a).values('name')
+                id=party_a).values('name')[0]['name']
             party_b = CompanyCodeOrNumber.objects.filter(
-                id=party_b).values('name')
+                id=party_b).values('name')[0]['name']
             name = InitiatorName.objects.filter(
-                id=initiator_name).values('name')
-            occ = Occasion.objects.filter(id=occasion).values('name')
+                id=initiator_name).values('name')[0]['name']
         except:
             raise Http404
         api_url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest"
@@ -465,13 +465,13 @@ def transaction_reversal(self, *args, **kwargs):
                 occasion=occasion)
             initiator = encryptInitiatorPassword()
             code_a = CompanyCodeOrNumber.objects.filter(
-                id=party_a).values('name')
+                id=party_a).values('name')[0]['name']
             code_b = CompanyCodeOrNumber.objects.filter(
-                id=party_b).values('name')
+                id=party_b).values('name')[0]['name']
             name = InitiatorName.objects.filter(
-                id=initiator_name).values('name')
+                id=initiator_name).values('name')[0]['name']
             com_id = MpesaCommandId.objects.filter(
-                id=command_id).values('name')
+                id=command_id).values('name')[0]['name']
 
         except:
             raise Http404
@@ -530,7 +530,7 @@ def initiate_lipa_na_mpesa_online_transaction(self, *args, **kwargs):
                 id=request.data['transaction_type'])
             command_id = MpesaCommandId.objects.get(
                 id=request.data['command_id'])
-            occasion = Occasion.objects.get(id=request.data['occasion'])
+            # occasion = Occasion.objects.get(id=request.data['occasion'])
             amount = request.data['amount'],
             remarks = request.data['remarks'],
             party_b = CompanyCodeOrNumber.objects.get(
@@ -544,17 +544,15 @@ def initiate_lipa_na_mpesa_online_transaction(self, *args, **kwargs):
                 transaction_type=transaction_type,
                 initiator_name=initiator_name)
             code_a = CompanyCodeOrNumber.objects.filter(
-                id=party_a).values('name')
+                id=party_a).values('name')[0]['name']
             code_b = CompanyCodeOrNumber.objects.filter(
-                id=party_b).values('name')
-            name = InitiatorName.objects.filter(
-                id=initiator_name).values('name')
+                id=party_b).values('name')[0]['name']
             com_id = MpesaCommandId.objects.filter(
-                id=command_id).values('name')
+                id=command_id).values('name')[0]['name']
             t_type = TransactionType.objects.filter(
-                id=transaction_type).values('name')
-            current_transaction = Transaction.objects.filter(id=transaction)
-            time = current_transaction['created']
+                id=transaction_type).values('name')[0]['name']
+            time = Transaction.objects.filter(
+                id=transaction).values('created')[0]['created']
 
         except:
             raise Http404
@@ -620,11 +618,9 @@ def query_lipa_na_mpesa_online_transaction_status(self, *args, **kwargs):
                 transaction_type=transaction_type,
                 initiator_name=initiator_name)
             code_b = CompanyCodeOrNumber.objects.filter(
-                id=party_b).values('name')
-            old_transaction = Transaction.objects.filter(
-                id=transaction_old)
-            time = old_transaction['created']
-
+                id=party_b).values('name')[0]['name']
+            time = Transaction.objects.filter(
+                id=transaction).values('created')[0]['created']
         except:
             raise Http404
         password = Password(code_b, time)
@@ -663,33 +659,33 @@ def query_lipa_na_mpesa_online_transaction_status(self, *args, **kwargs):
 
 @api_view(['POST'])
 def create_occassion(self, *args, **kwargs):
-    occassion = Occassion.objects.create(name=request.data['occasions'])
+    occassion = Occassion.objects.create(name=request.data['occasion'])
     return Response(responses, status=status.HTTP_201_CREATED)
 
 
 @api_view(['POST'])
 def create_mpesa_command_id(self, *args, **kwargs):
-    name = MpesaCommandId.objects.create(name=request.data['command_id'])
+    command_id = MpesaCommandId.objects.create(name=request.data['command_id'])
     return Response(responses, status=status.HTTP_201_CREATED)
 
 
 @api_view(['POST'])
 def create_company_short_code_or_number(self, *args, **kwargs):
-    name = CompanyShortCodeOrNumber.objects.create(
+    shortcode = CompanyShortCodeOrNumber.objects.create(
         name=request.data['short_code'])
     return Response(responses, status=status.HTTP_201_CREATED)
 
 
 @api_view(['POST'])
 def create_initiator_name(self, *args, **kwargs):
-    name = InitiatorName.objects.create(
+    initiator_name = InitiatorName.objects.create(
         name=request.data['initiator_name'])
     return Response(responses, status=status.HTTP_201_CREATED)
 
 
 @api_view(['POST'])
 def create_transaction_type(self, *args, **kwargs):
-    name = TransactionType.objects.create(
+    transaction_type = TransactionType.objects.create(
         name=request.data['transaction_type'])
     return Response(responses, status=status.HTTP_201_CREATED)
 
@@ -697,7 +693,7 @@ def create_transaction_type(self, *args, **kwargs):
 @api_view(['POST'])
 def create_customer(self, *args, **kwargs):
     number = CompanyShortCodeOrNumber.objects.get(id=request.data['number'])
-    name = Customer.objects.create(
+    customer = Customer.objects.create(
         name=request.data['transaction_type'],
         number=number)
     return Response(responses, status=status.HTTP_201_CREATED)
@@ -705,7 +701,7 @@ def create_customer(self, *args, **kwargs):
 
 @api_view(['POST'])
 def create_identifier_type(self, *args, **kwargs):
-    name = IdentifierType.objects.create(
+    transaction_type = IdentifierType.objects.create(
         name=request.data['transaction_type'])
     return Response(response, status=status.HTTP_201_CREATED)
 
@@ -720,7 +716,7 @@ class OccasionListView(generics.ListAPIView):
         except:
             raise Http404
         serializer = OccasionSerializer(
-            occasions, many=True)
+            occassions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -735,7 +731,7 @@ class OccasionDetailAPIView(DestroyModelMixin,
             raise Http404
 
     def get(self, request, pk, format=None):
-        serializer = OccassionSerializer(bio)
+        serializer = OccassionSerializer(occassion)
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
@@ -782,7 +778,7 @@ class MpesaCommandIdDetailAPIView(DestroyModelMixin,
             raise Http404
 
     def get(self, request, pk, format=None):
-        serializer = MpesaCommandIdSerializer(bio)
+        serializer = MpesaCommandIdSerializer(command_id)
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
@@ -829,7 +825,7 @@ class MpesaShortCodeOrNumberDetailAPIView(DestroyModelMixin,
             raise Http404
 
     def get(self, request, pk, format=None):
-        serializer = CompanyShortCodeOrNumberSerializer(bio)
+        serializer = CompanyShortCodeOrNumberSerializer(companycode_or_no)
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
@@ -876,7 +872,7 @@ class InitiatorNameDetailAPIView(DestroyModelMixin,
             raise Http404
 
     def get(self, request, pk, format=None):
-        serializer = InitiatorNameSerializer(bio)
+        serializer = InitiatorNameSerializer(initiator_name)
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
@@ -923,7 +919,7 @@ class TransactionTypeDetailAPIView(DestroyModelMixin,
             raise Http404
 
     def get(self, request, pk, format=None):
-        serializer = TransactionTypeSerializer(bio)
+        serializer = TransactionTypeSerializer(transaction_type)
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
@@ -970,7 +966,7 @@ class CustomerDetailAPIView(DestroyModelMixin,
             raise Http404
 
     def get(self, request, pk, format=None):
-        serializer = CustomerSerializer(bio)
+        serializer = CustomerSerializer(customer)
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
@@ -1017,7 +1013,7 @@ class IdentifierTypeDetailAPIView(DestroyModelMixin,
             raise Http404
 
     def get(self, request, pk, format=None):
-        serializer = IdentifierSerializer(bio)
+        serializer = IdentifierSerializer(identifier_type)
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
@@ -1053,6 +1049,20 @@ class TransactionListView(generics.ListAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class TransactionDetailAPIView(UpdateModelMixin,
+                               generics.RetrieveAPIView):
+
+    def get_object(self, pk):
+        try:
+            return Transaction.objects.get(pk=pk)
+        except Transaction.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        serializer = TransactionSerializer(transaction)
+        return Response(serializer.data)
+
+
 class TransactionResponseListView(generics.ListAPIView):
     serializer_class = TransactionResponseSerializer
     queryset = TransactionResponse.objects.all()
@@ -1067,6 +1077,20 @@ class TransactionResponseListView(generics.ListAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class TransactionResponseDetailAPIView(UpdateModelMixin,
+                                       generics.RetrieveAPIView):
+
+    def get_object(self, pk):
+        try:
+            return TransactionResponse.objects.get(pk=pk)
+        except TransactionResponse.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        serializer = TransactionResponseSerializer(transactionresponse)
+        return Response(serializer.data)
+
+
 class RegistrationListView(generics.ListAPIView):
     serializer_class = RegistrationSerializer
     queryset = Registration.objects.all()
@@ -1079,3 +1103,17 @@ class RegistrationListView(generics.ListAPIView):
         serializer = RegistrationSerializer(
             registrations, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class RegistrationDetailAPIView(UpdateModelMixin,
+                                generics.RetrieveAPIView):
+
+    def get_object(self, pk):
+        try:
+            return Registration.objects.get(pk=pk)
+        except Registration.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        serializer = RegistrationSerializer(registration)
+        return Response(serializer.data)
