@@ -6,7 +6,7 @@ urlpatterns = [
     url(r'^get/token/$', Authenticate.as_view(),
         name="mpesa/token/request",),
     url(r'^b2b/transaction/$', CreateBToBTransaction.as_view(),
-        ame="create_b_2_b_transaction",),
+        name="create_b_2_b_transaction",),
     url(r'^b2c/transaction/$', CreateBToCTransaction.as_view(),
         name="create_b_2_c_transaction",),
     url(r'^register/c2b/url/$', RegisterCToBUrl.as_view(),

@@ -667,7 +667,7 @@ class QueryLipaNaMpesaOnlineTransactionStatus(APIView):
         return Response(responses, status=status.HTTP_201_CREATED)
 
 
-class CreateOccassion(api_view):
+class CreateOccassion(APIView):
 
     def post(self, *args, **kwargs):
         occassion = Occassion.objects.create(name=request.data['occasion'])
@@ -706,7 +706,7 @@ class CreateTransactionType(APIView):
         return Response(responses, status=status.HTTP_201_CREATED)
 
 
-class CreateCustomer(ApiView):
+class CreateCustomer(APIView):
 
     def post(self, *args, **kwargs):
         number = CompanyShortCodeOrNumber.objects.get(
