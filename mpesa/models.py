@@ -1,7 +1,9 @@
 from django.db import models
 from model_utils import Choices
 from django.utils.translation import ugettext_lazy as _
-
+from django.contrib.auth import get_user_model
+from django.conf import settings
+User = get_user_model()
 # Create your models here.
 
 
@@ -27,7 +29,9 @@ class CompanyShortCodeOrNumber(models.Model):
 
 
 class Customer(models.Model):
-    name = models.CharField(max_length=200, null=True)
+    name = models.CharField(max_length=200, null=True, blank=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             related_name='Customer', null=True)
     number = models.ForeignKey(CompanyShortCodeOrNumber,
                                related_name='Customer', null=True)
 
@@ -111,7 +115,8 @@ class TransactionResponse(models.Model):
 
 class Registration(models.Model):
     company_code = models.ForeignKey(
-        CompanyShortCodeOrNumber, related_name='CompanyShortCodeOrNumber', null=True)
+        CompanyShortCodeOrNumber, related_name='CompanyShortCodeOrNumber',
+        null=True)
     company_name = models.ForeignKey(InitiatorName,
                                      related_name='registration', null=True)
     confirmation_url = models.CharField(max_length=200, null=True, blank=True)
