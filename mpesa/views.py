@@ -71,7 +71,7 @@ def encryptInitiatorPassword():
 
 class CreateBToCTransaction(APIView):
 
-    def post(self, *args, **kwargs):
+    def post(self, request, format=None):
         # company to customer transaction based phone no and shortcode
         access_token = authenticate()
         try:
@@ -153,7 +153,7 @@ class CreateBToCTransaction(APIView):
 
 class CreateBToBTransaction(APIView):
 
-    def post(self, *args, **kwargs):
+    def post(self, request, format=None):
         # company to company transaction based on short codes
         access_token = authenticate()
         try:
@@ -185,18 +185,12 @@ class CreateBToBTransaction(APIView):
                     initiator_name=initiator_name,
                     occasion=occasion)
                 initiator = encryptInitiatorPassword()
-                com_id = MpesaCommandId.objects.filter(
-                    id=command_id).values('name')[0]['name']
-                party_a = CompanyCodeOrNumber.objects.filter(
-                    id=party_a).values('name')[0]['name']
-                party_b = CompanyCodeOrNumber.objects.filter(
-                    id=party_b).values('name')[0]['name']
-                name = InitiatorName.objects.filter(
-                    id=initiator_name).values('name')[0]['name']
-                id_type_a = IdentifierType.objects.filter(
-                    id=identifier_type_a).values('name')[0]['name']
-                id_type_b = IdentifierType.objects.filter(
-                    id=identifier_type_b).values('name')[0]['name']
+                com_id = command_id.name
+                party_a = party_a.name
+                party_b = party_b.name
+                name = initiator_name.name
+                id_type_a = identifier_type_a.name
+                id_type_b = identifier_type_b.name
             except:
                 raise Http404
             api_url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest"
@@ -242,7 +236,7 @@ class CreateBToBTransaction(APIView):
 
 class RegisterCToBUrl(APIView):
 
-    def post(self, *args, **kwargs):
+    def post(self, request, format=None):
         # The C2B Register URL API registers the 3rd party’s confirmation and validation URLs to M-Pesa ;
         # which then maps these URLs to the 3rd party shortcode.
         # Whenever M-Pesa receives a transaction on the shortcode,
@@ -265,8 +259,7 @@ class RegisterCToBUrl(APIView):
                     validation_url=validation_url)
             except:
                 raise Http404
-                party_b = CompanyCodeOrNumber.objects.filter(
-                    id=party_b).values('name')[0]['name']
+            party_b = party_b.name
 
             api_url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest"
             headers = {"Authorization": "Bearer %s" % access_token}
@@ -303,7 +296,7 @@ class RegisterCToBUrl(APIView):
 
 class CheckAccountBalance(APIView):
 
-    def post(self, *args, **kwargs):
+    def post(self, request, format=None):
         # company to company transaction based on short codes
         access_token = authenticate()
         try:
@@ -324,10 +317,8 @@ class CheckAccountBalance(APIView):
                 initiator = encryptInitiatorPassword()
                 com_id = MpesaCommandId.objects.filter(
                     id=command_id).values('name')[0]['name']
-                party_a = CompanyCodeOrNumber.objects.filter(
-                    id=party_a).values('name')[0]['name']
-                name = InitiatorName.objects.filter(
-                    id=initiator_name).values('name')[0]['name']
+                party_a = party_a.name
+                name = initiator_name.name
             except:
                 raise Http404
             api_url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest"
@@ -367,7 +358,7 @@ class CheckAccountBalance(APIView):
 
 class CheckTransactionStatus(APIView):
 
-    def post(self, *args, **kwargs):
+    def post(self, request, format=None):
         # company to company transaction based on short codes
         access_token = authenticate()
         try:
@@ -394,14 +385,10 @@ class CheckTransactionStatus(APIView):
                     initiator_name=initiator_name,
                     occasion=occasion)
                 initiator = encryptInitiatorPassword()
-                com_id = MpesaCommandId.objects.filter(
-                    id=command_id).values('name')[0]['name']
-                party_a = CompanyCodeOrNumber.objects.filter(
-                    id=party_a).values('name')[0]['name']
-                party_b = CompanyCodeOrNumber.objects.filter(
-                    id=party_b).values('name')[0]['name']
-                name = InitiatorName.objects.filter(
-                    id=initiator_name).values('name')[0]['name']
+                com_id = command_id.name
+                party_a = party_a.name
+                party_b = party_b.name
+                name = initiator_name.name
             except:
                 raise Http404
             api_url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest"
@@ -444,7 +431,7 @@ class CheckTransactionStatus(APIView):
 
 class TransactionReversal(APIView):
 
-    def post(self, *args, **kwargs):
+    def post(self, request, format=None):
         # company to customer transaction based phone no and shortcode
         access_token = authenticate()
         try:
@@ -472,14 +459,10 @@ class TransactionReversal(APIView):
                     initiator_name=initiator_name,
                     occasion=occasion)
                 initiator = encryptInitiatorPassword()
-                code_a = CompanyCodeOrNumber.objects.filter(
-                    id=party_a).values('name')[0]['name']
-                code_b = CompanyCodeOrNumber.objects.filter(
-                    id=party_b).values('name')[0]['name']
-                name = InitiatorName.objects.filter(
-                    id=initiator_name).values('name')[0]['name']
-                com_id = MpesaCommandId.objects.filter(
-                    id=command_id).values('name')[0]['name']
+                code_a = party_a.name
+                code_b = party_b.name
+                name = initiator_name.name
+                com_id = command_id.name
 
             except:
                 raise Http404
@@ -524,7 +507,7 @@ class TransactionReversal(APIView):
 
 class InitiateLipaNaMpesaTransaction(APIView):
 
-    def post(self, *args, **kwargs):
+    def post(self, request, format=None):
         # Lipa na M-Pesa Online Payment API is
         # used to initiate a M-Pesa transaction
         # on behalf of a customer using STK Push
@@ -552,16 +535,11 @@ class InitiateLipaNaMpesaTransaction(APIView):
                     command_id=command_id,
                     transaction_type=transaction_type,
                     initiator_name=initiator_name)
-                code_a = CompanyCodeOrNumber.objects.filter(
-                    id=party_a).values('name')[0]['name']
-                code_b = CompanyCodeOrNumber.objects.filter(
-                    id=party_b).values('name')[0]['name']
-                com_id = MpesaCommandId.objects.filter(
-                    id=command_id).values('name')[0]['name']
-                t_type = TransactionType.objects.filter(
-                    id=transaction_type).values('name')[0]['name']
-                time = Transaction.objects.filter(
-                    id=transaction).values('created')[0]['created']
+                code_a = party_a.name
+                code_b = party_b.name
+                com_id = command_id.name
+                t_type = transaction_type.name
+                time = transaction.created
 
             except:
                 raise Http404
@@ -608,7 +586,7 @@ class InitiateLipaNaMpesaTransaction(APIView):
 
 class QueryLipaNaMpesaOnlineTransactionStatus(APIView):
 
-    def post(self, *args, **kwargs):
+    def post(self, request, format=None):
         # Lipa na M-Pesa Online Payment API is
         # used to initiate a M-Pesa transaction
         # on behalf of a customer using STK Push
@@ -627,10 +605,8 @@ class QueryLipaNaMpesaOnlineTransactionStatus(APIView):
                     party_b=party_b,
                     transaction_type=transaction_type,
                     initiator_name=initiator_name)
-                code_b = CompanyCodeOrNumber.objects.filter(
-                    id=party_b).values('name')[0]['name']
-                time = Transaction.objects.filter(
-                    id=transaction).values('created')[0]['created']
+                code_b = party_b.name
+                time = transaction.created
             except:
                 raise Http404
             password = Password(code_b, time)
@@ -669,14 +645,14 @@ class QueryLipaNaMpesaOnlineTransactionStatus(APIView):
 
 class CreateOccassion(APIView):
 
-    def post(self, *args, **kwargs):
+    def post(self, request, format=None):
         occassion = Occassion.objects.create(name=request.data['occasion'])
         return Response(responses, status=status.HTTP_201_CREATED)
 
 
 class CreateMpesaCommandId(APIView):
 
-    def post(self, *args, **kwargs):
+    def post(self, request, format=None):
         command_id = MpesaCommandId.objects.create(
             name=request.data['command_id'])
         return Response(responses, status=status.HTTP_201_CREATED)
@@ -684,7 +660,7 @@ class CreateMpesaCommandId(APIView):
 
 class CreateCompanyShortCodeOrNumber(APIView):
 
-    def post(self, *args, **kwargs):
+    def post(self, request, format=None):
         shortcode = CompanyShortCodeOrNumber.objects.create(
             name=request.data['short_code'])
         return Response(responses, status=status.HTTP_201_CREATED)
@@ -692,7 +668,7 @@ class CreateCompanyShortCodeOrNumber(APIView):
 
 class CreateInitiatorName(APIView):
 
-    def post(self, *args, **kwargs):
+    def post(self, request, format=None):
         initiator_name = InitiatorName.objects.create(
             name=request.data['initiator_name'])
         return Response(responses, status=status.HTTP_201_CREATED)
@@ -700,7 +676,7 @@ class CreateInitiatorName(APIView):
 
 class CreateTransactionType(APIView):
 
-    def post(self, *args, **kwargs):
+    def post(self, request, format=None):
         transaction_type = TransactionType.objects.create(
             name=request.data['transaction_type'])
         return Response(responses, status=status.HTTP_201_CREATED)
@@ -708,7 +684,7 @@ class CreateTransactionType(APIView):
 
 class CreateCustomer(APIView):
 
-    def post(self, *args, **kwargs):
+    def post(self, request, format=None):
         number = CompanyShortCodeOrNumber.objects.get(
             id=request.data['number'])
         customer = Customer.objects.create(
@@ -719,7 +695,7 @@ class CreateCustomer(APIView):
 
 class CreateInitiatorType(APIView):
 
-    def post(self, *args, **kwargs):
+    def post(self, request, format=None):
         transaction_type = IdentifierType.objects.create(
             name=request.data['transaction_type'])
         return Response(response, status=status.HTTP_201_CREATED)
@@ -743,33 +719,32 @@ class OccasionDetailAPIView(DestroyModelMixin,
                             UpdateModelMixin,
                             generics.RetrieveAPIView):
 
-    def get_object(self, pk):
+    def get(self, request, pk, format=None):
+        try:
+            occassion = Occassion.objects.get(pk=pk)
+        except Occassion.DoesNotExist:
+            raise Http404
+        serializer = OccassionSerializer(occassion)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request, pk, format=None):
         try:
             return Occassion.objects.get(pk=pk)
         except Occassion.DoesNotExist:
             raise Http404
-
-    def get(self, request, pk, format=None):
-        serializer = OccassionSerializer(occassion)
-        return Response(serializer.data)
-
-    def put(self, request, pk, format=None):
         serializer = OccasionSerializer(
             occassion, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(
-                serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request, pk, format=None):
         try:
-            occassion = self.get_object(pk)
-            occassion.delete()
-        except:
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            return Occassion.objects.get(pk=pk)
+        except Occassion.DoesNotExist:
+            raise Http404
+        occassion.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class MpesaCommandIdListView(generics.ListAPIView):
@@ -790,33 +765,32 @@ class MpesaCommandIdDetailAPIView(DestroyModelMixin,
                                   UpdateModelMixin,
                                   generics.RetrieveAPIView):
 
-    def get_object(self, pk):
+    def get(self, request, pk, format=None):
         try:
-            return MpesaCommandId.objects.get(pk=pk)
+            command_id = MpesaCommandId.objects.get(pk=pk)
         except MpesaCommandId.DoesNotExist:
             raise Http404
-
-    def get(self, request, pk, format=None):
         serializer = MpesaCommandIdSerializer(command_id)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request, pk, format=None):
+        try:
+            command_id = MpesaCommandId.objects.get(pk=pk)
+        except MpesaCommandId.DoesNotExist:
+            raise Http404
         serializer = MpesaCommandIdSerializer(
             command_id, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(
-                serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request, pk, format=None):
         try:
-            command_id = self.get_object(pk)
-            command_id.delete()
-        except:
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            command_id = MpesaCommandId.objects.get(pk=pk)
+        except MpesaCommandId.DoesNotExist:
+            raise Http404
+        command_id.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class MpesaShortCodeOrNumberListView(generics.ListAPIView):
@@ -837,33 +811,34 @@ class MpesaShortCodeOrNumberDetailAPIView(DestroyModelMixin,
                                           UpdateModelMixin,
                                           generics.RetrieveAPIView):
 
-    def get_object(self, pk):
+    def get(self, request, pk, format=None):
         try:
-            return CompanyShortCodeOrNumber.objects.get(pk=pk)
+            companycode_or_no = CompanyShortCodeOrNumber.objects.get(pk=pk)
         except CompanyShortCodeOrNumber.DoesNotExist:
             raise Http404
 
-    def get(self, request, pk, format=None):
         serializer = CompanyShortCodeOrNumberSerializer(companycode_or_no)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request, pk, format=None):
+        try:
+            companycode_or_no = CompanyShortCodeOrNumber.objects.get(pk=pk)
+        except CompanyShortCodeOrNumber.DoesNotExist:
+            raise Http404
+
         serializer = CompanyShortCodeOrNumberSerializer(
             companycode_or_no, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(
-                serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request, pk, format=None):
         try:
-            companycode_or_no = self.get_object(pk)
-            companycode_or_no.delete()
-        except:
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            companycode_or_no = CompanyShortCodeOrNumber.objects.get(pk=pk)
+        except CompanyShortCodeOrNumber.DoesNotExist:
+            raise Http404
+        companycode_or_no.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class InitiatorNameListView(generics.ListAPIView):
@@ -884,33 +859,33 @@ class InitiatorNameDetailAPIView(DestroyModelMixin,
                                  UpdateModelMixin,
                                  generics.RetrieveAPIView):
 
-    def get_object(self, pk):
+    def get(self, request, pk, format=None):
         try:
-            return InitiatorName.objects.get(pk=pk)
+            initiator_name = InitiatorName.objects.get(pk=pk)
         except InitiatorName.DoesNotExist:
             raise Http404
 
-    def get(self, request, pk, format=None):
         serializer = InitiatorNameSerializer(initiator_name)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request, pk, format=None):
+        try:
+            initiator_name = InitiatorName.objects.get(pk=pk)
+        except InitiatorName.DoesNotExist:
+            raise Http404
         serializer = InitiatorNameSerializer(
             initiator_name, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(
-                serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request, pk, format=None):
         try:
-            initiator_name = self.get_object(pk)
-            initiator_name.delete()
-        except:
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            initiator_name = InitiatorName.objects.get(pk=pk)
+        except InitiatorName.DoesNotExist:
+            raise Http404
+        initiator_name.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class TransactionTypeListView(generics.ListAPIView):
@@ -931,33 +906,32 @@ class TransactionTypeDetailAPIView(DestroyModelMixin,
                                    UpdateModelMixin,
                                    generics.RetrieveAPIView):
 
-    def get_object(self, pk):
+    def get(self, request, pk, format=None):
         try:
-            return TransactionType.objects.get(pk=pk)
+            transaction_type = TransactionType.objects.get(pk=pk)
         except TransactionType.DoesNotExist:
             raise Http404
-
-    def get(self, request, pk, format=None):
         serializer = TransactionTypeSerializer(transaction_type)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request, pk, format=None):
+        try:
+            transaction_type = TransactionType.objects.get(pk=pk)
+        except TransactionType.DoesNotExist:
+            raise Http404
         serializer = TransactionTypeSerializer(
             transaction_type, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(
-                serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request, pk, format=None):
         try:
-            transaction_type = self.get_object(pk)
-            transaction_type.delete()
-        except:
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            transaction_type = TransactionType.objects.get(pk=pk)
+        except TransactionType.DoesNotExist:
+            raise Http404
+        transaction_type.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class CustomerListView(generics.ListAPIView):
@@ -978,33 +952,32 @@ class CustomerDetailAPIView(DestroyModelMixin,
                             UpdateModelMixin,
                             generics.RetrieveAPIView):
 
-    def get_object(self, pk):
+    def get(self, request, pk, format=None):
         try:
-            return Customer.objects.get(pk=pk)
+            customer = Customer.objects.get(pk=pk)
         except Customer.DoesNotExist:
             raise Http404
-
-    def get(self, request, pk, format=None):
         serializer = CustomerSerializer(customer)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request, pk, format=None):
+        try:
+            customer = Customer.objects.get(pk=pk)
+        except Customer.DoesNotExist:
+            raise Http404
         serializer = CustomerSerializer(
             customer, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(
-                serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request, pk, format=None):
         try:
-            customer = self.get_object(pk)
-            customer.delete()
-        except:
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            customer = Customer.objects.get(pk=pk)
+        except Customer.DoesNotExist:
+            raise Http404
+        customer.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class IdentifierTypeListView(generics.ListAPIView):
@@ -1025,33 +998,32 @@ class IdentifierTypeDetailAPIView(DestroyModelMixin,
                                   UpdateModelMixin,
                                   generics.RetrieveAPIView):
 
-    def get_object(self, pk):
+    def get(self, request, pk, format=None):
         try:
-            return IdentifierType.objects.get(pk=pk)
+            identifier_type = IdentifierType.objects.get(pk=pk)
         except IdentifierType.DoesNotExist:
             raise Http404
-
-    def get(self, request, pk, format=None):
         serializer = IdentifierSerializer(identifier_type)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request, pk, format=None):
+        try:
+            identifier_type = IdentifierType.objects.get(pk=pk)
+        except IdentifierType.DoesNotExist:
+            raise Http404
         serializer = IdentifierTypeSerializer(
             identifier_type, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(
-                serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request, pk, format=None):
         try:
-            identifier_type = self.get_object(pk)
-            identifier_type.delete()
-        except:
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            identifier_type = IdentifierType.objects.get(pk=pk)
+        except IdentifierType.DoesNotExist:
+            raise Http404
+        identifier_type.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class TransactionListView(generics.ListAPIView):
@@ -1068,18 +1040,15 @@ class TransactionListView(generics.ListAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class TransactionDetailAPIView(UpdateModelMixin,
-                               generics.RetrieveAPIView):
-
-    def get_object(self, pk):
-        try:
-            return Transaction.objects.get(pk=pk)
-        except Transaction.DoesNotExist:
-            raise Http404
+class TransactionDetailAPIView(generics.RetrieveAPIView):
 
     def get(self, request, pk, format=None):
+        try:
+            transaction = Transaction.objects.get(pk=pk)
+        except Transaction.DoesNotExist:
+            raise Http404
         serializer = TransactionSerializer(transaction)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class TransactionResponseListView(generics.ListAPIView):
@@ -1096,16 +1065,13 @@ class TransactionResponseListView(generics.ListAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class TransactionResponseDetailAPIView(UpdateModelMixin,
-                                       generics.RetrieveAPIView):
-
-    def get_object(self, pk):
-        try:
-            return TransactionResponse.objects.get(pk=pk)
-        except TransactionResponse.DoesNotExist:
-            raise Http404
+class TransactionResponseDetailAPIView(generics.RetrieveAPIView):
 
     def get(self, request, pk, format=None):
+        try:
+            transactionresponse = TransactionResponse.objects.get(pk=pk)
+        except TransactionResponse.DoesNotExist:
+            raise Http404
         serializer = TransactionResponseSerializer(transactionresponse)
         return Response(serializer.data)
 
@@ -1124,15 +1090,13 @@ class RegistrationListView(generics.ListAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class RegistrationDetailAPIView(UpdateModelMixin,
-                                generics.RetrieveAPIView):
+class RegistrationDetailAPIView(generics.RetrieveAPIView):
 
-    def get_object(self, pk):
+    def get(self, request, pk, format=None):
         try:
-            return Registration.objects.get(pk=pk)
+            registration = Registration.objects.get(pk=pk)
         except Registration.DoesNotExist:
             raise Http404
 
-    def get(self, request, pk, format=None):
         serializer = RegistrationSerializer(registration)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
