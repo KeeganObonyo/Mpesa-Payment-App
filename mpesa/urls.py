@@ -3,8 +3,6 @@ from django.conf.urls import url
 from .views import *
 
 urlpatterns = [
-    url(r'^get/token/$', Authenticate.as_view(),
-        name="mpesa/token/request",),
     url(r'^b2b/transaction/$', CreateBToBTransaction.as_view(),
         name="create_b_2_b_transaction",),
     url(r'^b2c/transaction/$', CreateBToCTransaction.as_view(),
@@ -33,8 +31,6 @@ urlpatterns = [
         name="create_initiator_name",),
     url(r'^create/transaction/type/$', CreateTransactionType.as_view(),
         name="create_transaction_type",),
-    url(r'^create/customer/$', CreateCustomer.as_view(),
-        name="create_customer",),
     url(r'^create/initiator/type/$', CreateInitiatorType.as_view(),
         name="create_initiator_type",),
 
@@ -48,8 +44,6 @@ urlpatterns = [
         InitiatorNameDetailAPIView.as_view(), name='thread'),
     url(r'^transaction/type/detail/(?P<pk>\d+)/$',
         TransactionTypeDetailAPIView.as_view(), name='thread'),
-    url(r'^customer/detail/(?P<pk>\d+)/$',
-        CustomerDetailAPIView.as_view(), name='thread'),
     url(r'^identifier/type/detail/(?P<pk>\d+)/$',
         IdentifierTypeDetailAPIView.as_view(), name='thread'),
 
@@ -64,8 +58,6 @@ urlpatterns = [
         InitiatorNameListView.as_view(), name='initiatorname-list'),
     url(r'^transactiontype/list/$',
         TransactionTypeListView.as_view(), name='transactiontype-list'),
-    url(r'^customer/list/$',
-        CustomerListView.as_view(), name='customer-list'),
     url(r'^identifiertype/list/$',
         IdentifierTypeListView.as_view(), name='identifiertype-list'),
     url(r'^transaction/list/$',
@@ -76,4 +68,3 @@ urlpatterns = [
     url(r'^registration/list/$',
         RegistrationListView.as_view(), name='registration-list'),
 ]
-urlpatterns = format_suffix_patterns(urlpatterns, allowed=['json'])

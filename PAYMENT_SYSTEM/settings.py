@@ -39,14 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'mpesa',
-    'credits',
-    'accounts'
-]
-
-AUTH_USER_MODEL = 'accounts.User'
-
-ADMIN_VIEW_PERMISSION_MODELS = [
-    'accounts.User',
 ]
 
 

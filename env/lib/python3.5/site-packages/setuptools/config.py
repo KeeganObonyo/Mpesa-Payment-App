@@ -7,7 +7,11 @@ from functools import partial
 from importlib import import_module
 
 from distutils.errors import DistutilsOptionError, DistutilsFileError
+from setuptools.extern.packaging.version import LegacyVersion, parse
 from setuptools.extern.six import string_types
+
+
+__metaclass__ = type
 
 
 def read_configuration(
@@ -101,18 +105,18 @@ def parse_configuration(
         If False exceptions are propagated as expected.
     :rtype: list
     """
-    meta = ConfigMetadataHandler(
-        distribution.metadata, command_options, ignore_option_errors)
-    meta.parse()
-
     options = ConfigOptionsHandler(
         distribution, command_options, ignore_option_errors)
     options.parse()
 
+    meta = ConfigMetadataHandler(
+        distribution.metadata, command_options, ignore_option_errors, distribution.package_dir)
+    meta.parse()
+
     return meta, options
 
 
-class ConfigHandler(object):
+class ConfigHandler:
     """Handles metadata supplied in configuration files."""
 
     section_prefix = None
@@ -280,7 +284,7 @@ class ConfigHandler(object):
             return f.read()
 
     @classmethod
-    def _parse_attr(cls, value):
+    def _parse_attr(cls, value, package_dir=None):
         """Represents value as a module attribute.
 
         Examples:
@@ -300,7 +304,21 @@ class ConfigHandler(object):
         module_name = '.'.join(attrs_path)
         module_name = module_name or '__init__'
 
-        sys.path.insert(0, os.getcwd())
+        parent_path = os.getcwd()
+        if package_dir:
+            if attrs_path[0] in package_dir:
+                # A custom path was specified for the module we want to import
+                custom_path = package_dir[attrs_path[0]]
+                parts = custom_path.rsplit('/', 1)
+                if len(parts) > 1:
+                    parent_path = os.path.join(os.getcwd(), parts[0])
+                    module_name = parts[1]
+                else:
+                    module_name = custom_path
+            elif '' in package_dir:
+                # A custom parent directory was specified for all root modules
+                parent_path = os.path.join(os.getcwd(), package_dir[''])
+        sys.path.insert(0, parent_path)
         try:
             module = import_module(module_name)
             value = getattr(module, attr_name)
@@ -399,6 +417,12 @@ class ConfigMetadataHandler(ConfigHandler):
 
     """
 
+    def __init__(self, target_obj, options, ignore_option_errors=False,
+                 package_dir=None):
+        super(ConfigMetadataHandler, self).__init__(target_obj, options,
+                                                    ignore_option_errors)
+        self.package_dir = package_dir
+
     @property
     def parsers(self):
         """Metadata item name to parser function mapping."""
@@ -427,7 +451,19 @@ class ConfigMetadataHandler(ConfigHandler):
         :rtype: str
 
         """
-        version = self._parse_attr(value)
+        version = self._parse_file(value)
+
+        if version != value:
+            version = version.strip()
+            # Be strict about versions loaded from file because it's easy to
+            # accidentally include newlines and other unintended content
+            if isinstance(parse(version), LegacyVersion):
+                raise DistutilsOptionError('Version loaded from %s does not comply with PEP 440: %s' % (
+                    value, version
+                ))
+            return version
+
+        version = self._parse_attr(value, self.package_dir)
 
         if callable(version):
             version = version()

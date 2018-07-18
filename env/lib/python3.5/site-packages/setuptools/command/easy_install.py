@@ -40,12 +40,13 @@ import subprocess
 import shlex
 import io
 
+from sysconfig import get_config_vars, get_path
+
 from setuptools.extern import six
 from setuptools.extern.six.moves import configparser, map
 
 from setuptools import Command
 from setuptools.sandbox import run_setup
-from setuptools.py31compat import get_path, get_config_vars
 from setuptools.py27compat import rmtree_safe
 from setuptools.command import setopt
 from setuptools.archive_util import unpack_archive
@@ -61,6 +62,8 @@ from pkg_resources import (
     VersionConflict, DEVELOP_DIST,
 )
 import pkg_resources.py31compat
+
+__metaclass__ = type
 
 # Turn on PEP440Warnings
 warnings.filterwarnings("default", category=pkg_resources.PEP440Warning)
@@ -319,7 +322,7 @@ class easy_install(Command):
                     self.all_site_dirs.append(normalize_path(d))
         if not self.editable:
             self.check_site_dir()
-        self.index_url = self.index_url or "https://pypi.python.org/simple"
+        self.index_url = self.index_url or "https://pypi.org/simple/"
         self.shadow_path = self.all_site_dirs[:]
         for path_item in self.install_dir, normalize_path(self.script_dir):
             if path_item not in self.shadow_path:
@@ -2049,7 +2052,7 @@ class WindowsCommandSpec(CommandSpec):
     split_args = dict(posix=False)
 
 
-class ScriptWriter(object):
+class ScriptWriter:
     """
     Encapsulates behavior around writing entry point scripts for console and
     gui apps.

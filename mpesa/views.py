@@ -15,58 +15,8 @@ from rest_framework.generics import (
     RetrieveAPIView,
     RetrieveUpdateAPIView
 )
-import json
 from django.http import Http404
-# from m2rypto import RSA, X509
-import base64
-# from base64 import b64encode
-# To authenticate your app and get an OAuth access token, use this code.
-# An access token expires in 3600 seconds or 1 hour
-
-
-from requests.auth import HTTPBasicAuth
-
-
-class Authenticate(APIView):
-
-    def get(self, request, format=None):
-        consumer_key = "dJjjF6lieZzA62MRlGnd5YSnBBIxcAE1"
-        consumer_secret = "kJZcB2pDoulDOwOu"
-        api_URL = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
-
-        r = requests.get(api_URL, auth=HTTPBasicAuth(
-            consumer_key, consumer_secret))
-        data = r.json()
-        token = data['access_token']
-
-        return Response(token, status=status.HTTP_200_OK)
-
-
-INITIATOR_PASS = "YOUR_PASSWORD"
-CERTIFICATE_FILE = "PATH_TO_CERTIFICATE_FILE"
-
-# Base64 encoded string of the Security Credential, which is encrypted
-# using M-Pesa public key and validates the transaction on M-Pesa Core
-# system.
-
-
-def Password():
-    cipher = (
-        INITIATOR_PASS, code_b, time)
-    return b64encode(cipher)
-
-
-def encryptInitiatorPassword():
-    cert_file = open(CERTIFICATE_FILE, 'r')
-    cert_data = cert_file.read()  # read certificate file
-    cert_file.close()
-
-    cert = X509.load_cert_string(cert_data)
-    # pub_key = X509.load_cert_string(cert_data)
-    pub_key = cert.get_pubkey()
-    rsa_key = pub_key.get_rsa()
-    cipher = rsa_key.public_encrypt(INITIATOR_PASS, RSA.pkcs1_padding)
-    return b64encode(cipher)
+from .utils import *
 
 
 class CreateBToCTransaction(APIView):
@@ -136,7 +86,7 @@ class CreateBToCTransaction(APIView):
             response_code = response['ResponseCode']
             result_description = response['ResultDesc']
             result_code = response['ResultCode']
-            transaction_response = TransactionResponse.objects.create(
+            TransactionResponse.objects.create(
                 transaction_feedback=response_description,
                 transaction=transaction,
                 originator_conversation_id=originator_conversation_id,
@@ -219,7 +169,7 @@ class CreateBToBTransaction(APIView):
             response_code = response['ResponseCode']
             result_description = response['ResultDesc']
             result_code = response['ResultCode']
-            transaction_response = TransactionResponse.objects.create(
+            TransactionResponse.objects.create(
                 transaction_feedback=response_description,
                 transaction=transaction,
                 originator_conversation_id=originator_conversation_id,
@@ -252,7 +202,7 @@ class RegisterCToBUrl(APIView):
                     id=request.data['phone_no']),
                 confirmation_url = request.data['confirmation_url']
                 validation_url = request.data['confirmation_url']
-                registration = Registration.objects.create(
+                Registration.objects.create(
                     company=party_b,
                     initiator_name=initiator_name,
                     confirmation_url=confirmation_url,
@@ -279,7 +229,7 @@ class RegisterCToBUrl(APIView):
             response_code = response['ResponseCode']
             result_description = response['ResultDesc']
             result_code = response['ResultCode']
-            transaction_response = TransactionResponse.objects.create(
+            TransactionResponse.objects.create(
                 transaction_feedback=response_description,
                 transaction=transaction,
                 originator_conversation_id=originator_conversation_id,
@@ -341,7 +291,7 @@ class CheckAccountBalance(APIView):
             response_code = response['ResponseCode']
             result_description = response['ResultDesc']
             result_code = response['ResultCode']
-            transaction_response = TransactionResponse.objects.create(
+            TransactionResponse.objects.create(
                 transaction_feedback=response_description,
                 transaction=transaction,
                 originator_conversation_id=originator_conversation_id,
@@ -414,7 +364,7 @@ class CheckTransactionStatus(APIView):
             response_code = response['ResponseCode']
             result_description = response['ResultDesc']
             result_code = response['ResultCode']
-            transaction_response = TransactionResponse.objects.create(
+            TransactionResponse.objects.create(
                 transaction_feedback=response_description,
                 transaction=transaction,
                 originator_conversation_id=originator_conversation_id,
@@ -490,7 +440,7 @@ class TransactionReversal(APIView):
             response_code = response['ResponseCode']
             result_description = response['ResultDesc']
             result_code = response['ResultCode']
-            transaction_response = TransactionResponse.objects.create(
+            TransactionResponse.objects.create(
                 transaction_feedback=response_description,
                 transaction=transaction,
                 originator_conversation_id=originator_conversation_id,
@@ -543,7 +493,7 @@ class InitiateLipaNaMpesaTransaction(APIView):
 
             except:
                 raise Http404
-            password = Password(code_b, time)
+            password = Password(code_b=code_b, time=time)
             api_url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest"
             headers = {"Authorization": "Bearer %s" % access_token}
             request = {
@@ -569,7 +519,7 @@ class InitiateLipaNaMpesaTransaction(APIView):
             response_code = response['ResponseCode']
             result_description = response['ResultDesc']
             result_code = response['ResultCode']
-            transaction_response = TransactionResponse.objects.create(
+            TransactionResponse.objects.create(
                 transaction_feedback=response_description,
                 transaction=transaction,
                 originator_conversation_id=originator_conversation_id,
@@ -609,7 +559,7 @@ class QueryLipaNaMpesaOnlineTransactionStatus(APIView):
                 time = transaction.created
             except:
                 raise Http404
-            password = Password(code_b, time)
+            password = Password(code_b=code_b, time=time)
             api_url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest"
             headers = {"Authorization": "Bearer %s" % access_token}
             request = {
@@ -628,7 +578,7 @@ class QueryLipaNaMpesaOnlineTransactionStatus(APIView):
             response_code = response['ResponseCode']
             result_description = response['ResultDesc']
             result_code = response['ResultCode']
-            transaction_response = TransactionResponse.objects.create(
+            TransactionResponse.objects.create(
                 transaction_feedback=response_description,
                 transaction=transaction,
                 originator_conversation_id=originator_conversation_id,
@@ -646,14 +596,14 @@ class QueryLipaNaMpesaOnlineTransactionStatus(APIView):
 class CreateOccassion(APIView):
 
     def post(self, request, format=None):
-        occassion = Occassion.objects.create(name=request.data['occasion'])
+        Occassion.objects.create(name=request.data['occasion'])
         return Response(responses, status=status.HTTP_201_CREATED)
 
 
 class CreateMpesaCommandId(APIView):
 
     def post(self, request, format=None):
-        command_id = MpesaCommandId.objects.create(
+        MpesaCommandId.objects.create(
             name=request.data['command_id'])
         return Response(responses, status=status.HTTP_201_CREATED)
 
@@ -661,7 +611,7 @@ class CreateMpesaCommandId(APIView):
 class CreateCompanyShortCodeOrNumber(APIView):
 
     def post(self, request, format=None):
-        shortcode = CompanyShortCodeOrNumber.objects.create(
+        CompanyShortCodeOrNumber.objects.create(
             name=request.data['short_code'])
         return Response(responses, status=status.HTTP_201_CREATED)
 
@@ -669,7 +619,7 @@ class CreateCompanyShortCodeOrNumber(APIView):
 class CreateInitiatorName(APIView):
 
     def post(self, request, format=None):
-        initiator_name = InitiatorName.objects.create(
+        InitiatorName.objects.create(
             name=request.data['initiator_name'])
         return Response(responses, status=status.HTTP_201_CREATED)
 
@@ -677,26 +627,15 @@ class CreateInitiatorName(APIView):
 class CreateTransactionType(APIView):
 
     def post(self, request, format=None):
-        transaction_type = TransactionType.objects.create(
+        TransactionType.objects.create(
             name=request.data['transaction_type'])
-        return Response(responses, status=status.HTTP_201_CREATED)
-
-
-class CreateCustomer(APIView):
-
-    def post(self, request, format=None):
-        number = CompanyShortCodeOrNumber.objects.get(
-            id=request.data['number'])
-        customer = Customer.objects.create(
-            name=request.data['transaction_type'],
-            number=number)
         return Response(responses, status=status.HTTP_201_CREATED)
 
 
 class CreateInitiatorType(APIView):
 
     def post(self, request, format=None):
-        transaction_type = IdentifierType.objects.create(
+        IdentifierType.objects.create(
             name=request.data['transaction_type'])
         return Response(response, status=status.HTTP_201_CREATED)
 
@@ -931,52 +870,6 @@ class TransactionTypeDetailAPIView(DestroyModelMixin,
         except TransactionType.DoesNotExist:
             raise Http404
         transaction_type.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-class CustomerListView(generics.ListAPIView):
-    serializer_class = CustomerSerializer
-    queryset = Customer.objects.all()
-
-    def list(self, request):
-        try:
-            customers = Customer.objects.all()
-        except:
-            raise Http404
-        serializer = CustomerSerializer(
-            customers, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class CustomerDetailAPIView(DestroyModelMixin,
-                            UpdateModelMixin,
-                            generics.RetrieveAPIView):
-
-    def get(self, request, pk, format=None):
-        try:
-            customer = Customer.objects.get(pk=pk)
-        except Customer.DoesNotExist:
-            raise Http404
-        serializer = CustomerSerializer(customer)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def put(self, request, pk, format=None):
-        try:
-            customer = Customer.objects.get(pk=pk)
-        except Customer.DoesNotExist:
-            raise Http404
-        serializer = CustomerSerializer(
-            customer, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def delete(self, request, pk, format=None):
-        try:
-            customer = Customer.objects.get(pk=pk)
-        except Customer.DoesNotExist:
-            raise Http404
-        customer.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 

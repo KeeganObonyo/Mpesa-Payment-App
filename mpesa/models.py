@@ -1,10 +1,5 @@
+
 from django.db import models
-from model_utils import Choices
-from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth import get_user_model
-from django.conf import settings
-User = get_user_model()
-# Create your models here.
 
 
 class Occassion(models.Model):
@@ -23,17 +18,6 @@ class MpesaCommandId(models.Model):
 
 class CompanyShortCodeOrNumber(models.Model):
     name = models.IntegerField(null=True)
-
-    def __str__(self):
-        return str(self.name)
-
-
-class Customer(models.Model):
-    name = models.CharField(max_length=200, null=True, blank=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             related_name='Customer', null=True)
-    number = models.ForeignKey(CompanyShortCodeOrNumber,
-                               related_name='Customer', null=True)
 
     def __str__(self):
         return str(self.name)
