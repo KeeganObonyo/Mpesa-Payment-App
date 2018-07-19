@@ -36,7 +36,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/home/pmutua/Documents/OPENSOURCE/Mpesa-Payment-App/env"
+set -gx VIRTUAL_ENV "/home/aphya3/KEEGANPROJECTS/Repo_2/PAYMENT_SYSTEM/env"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH

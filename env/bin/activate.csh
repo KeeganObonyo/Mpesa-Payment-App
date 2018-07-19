@@ -7,7 +7,7 @@ alias deactivate 'test $?_OLD_VIRTUAL_PATH != 0 && setenv PATH "$_OLD_VIRTUAL_PA
 # Unset irrelevant variables.
 deactivate nondestructive
 
-setenv VIRTUAL_ENV "/home/pmutua/Documents/OPENSOURCE/Mpesa-Payment-App/env"
+setenv VIRTUAL_ENV "/home/aphya3/KEEGANPROJECTS/Repo_2/PAYMENT_SYSTEM/env"
 
 set _OLD_VIRTUAL_PATH="$PATH"
 setenv PATH "$VIRTUAL_ENV/bin:$PATH"

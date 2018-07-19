@@ -41,7 +41,7 @@ class CreateBToCTransaction(APIView):
                     id=request.data['phone_no']),
                 transaction = Transaction.objects.create(
                     amount=amount,
-                    remarks=remarks,
+                    comments=comments,
                     party_b=party_b,
                     Party_a=Party_a,
                     command_id=command_id,
