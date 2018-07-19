@@ -40,7 +40,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/home/aphya3/KEEGANPROJECTS/Repo_2/PAYMENT_SYSTEM/env"
+VIRTUAL_ENV="/home/pmutua/Documents/OPENSOURCE/Mpesa-Payment-App/env"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
