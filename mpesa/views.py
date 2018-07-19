@@ -35,7 +35,6 @@ from .serializers import (
     TransactionSerializer,
     TransactionResponseSerializer,
     IdentifierTypeSerializer,
-    IdentifierSerializer,
     RegistrationSerializer,
     OccassionSerializer)
     
@@ -424,7 +423,7 @@ class TransactionReversal(APIView):
                     id=request.data['transaction_type'])
                 command_id = MpesaCommandId.objects.get(
                     id=request.data['command_id'])
-               occassion = Occasion.objects.get(id=request.data['occasion'])
+                occassion = Occasion.objects.get(id=request.data['occasion'])
                 amount = request.data['amount'],
                 remarks = request.data['remarks'],
                 party_b = CompanyShortCodeOrNumber.objects.get(
