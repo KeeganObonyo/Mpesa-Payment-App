@@ -1,12 +1,20 @@
+<<<<<<< HEAD
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+=======
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
 import requests
 from rest_framework import status, generics
 from rest_framework.decorators import *
 from rest_framework.renderers import *
 from rest_framework.response import Response
+<<<<<<< HEAD
 from .models import *
 from .serializers import *
+=======
+
+
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
 from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin
 from rest_framework.views import APIView
 from rest_framework.generics import (
@@ -18,7 +26,39 @@ from rest_framework.generics import (
     RetrieveUpdateAPIView
 )
 from django.http import Http404
+<<<<<<< HEAD
 from .utils import *
+=======
+from .models import (
+    CompanyShortCodeOrNumber,
+    InitiatorName,
+    TransactionType,
+    MpesaCommandId,
+    Transaction,
+    TransactionResponse,
+    IdentifierType,
+    Registration,
+    Occassion)
+
+from .serializers import (
+    CompanyShortCodeOrNumberSerializer,
+    InitiatorNameSerializer,
+    TransactionTypeSerializer,
+    MpesaCommandIdSerializer,
+    TransactionSerializer,
+    TransactionResponseSerializer,
+    IdentifierTypeSerializer,
+    RegistrationSerializer,
+    OccassionSerializer)
+    
+from .utils import (
+    authenticate,
+    Password,
+    encryptInitiatorPassword
+)
+
+from urllib3.exceptions import HTTPError as BaseHTTPError
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
 
 
 class CreateBToCTransaction(APIView):
@@ -28,7 +68,11 @@ class CreateBToCTransaction(APIView):
         access_token = authenticate()
         try:
             try:
+<<<<<<< HEAD
                 party_a = CompanyCodeOrNumber.objects.get(
+=======
+                party_a = CompanyShortCodeOrNumber.objects.get(
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
                     id=request.data['company_short_code'])
                 initiator_name = InitiatorName.objects.get(
                     id=request.data['company_name'])
@@ -36,6 +80,7 @@ class CreateBToCTransaction(APIView):
                     id=request.data['transaction_type'])
                 command_id = MpesaCommandId.objects.get(
                     id=request.data['command_id'])
+<<<<<<< HEAD
                 occasion = Occasion.objects.get(id=request.data['occasion'])
                 amount = request.data['amount'],
                 remarks = request.data['remarks'],
@@ -46,11 +91,24 @@ class CreateBToCTransaction(APIView):
                     remarks=remarks,
                     party_b=party_b,
                     Party_a=Party_a,
+=======
+                occasion = Occassion.objects.get(id=request.data['occasion'])
+                amount = request.data['amount'],
+                remarks = request.data['remarks'],
+                party_b = CompanyShortCodeOrNumber.objects.get(
+                    id=request.data['phone_no']),
+                transaction = Transaction.objects.create(
+                    amount=amount,
+                    comments=comments,
+                    party_b=party_b,
+                    party_a=party_a,
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
                     command_id=command_id,
                     transaction_type=transaction_type,
                     initiator_name=initiator_name,
                     occasion=occasion)
                 initiator = encryptInitiatorPassword()
+<<<<<<< HEAD
                 code_a = CompanyCodeOrNumber.objects.get(
                     id=party_a).name
                 code_b = CompanyCodeOrNumber.objects.get(
@@ -63,6 +121,20 @@ class CreateBToCTransaction(APIView):
                     id=occasion).name
 
             except:
+=======
+                code_a = CompanyShortCodeOrNumber.objects.filter(
+                    id=party_a).values('name')[0]['name']
+                code_b = CompanyShortCodeOrNumber.objects.filter(
+                    id=party_b).values('name')[0]['name']
+                name = InitiatorName.objects.filter(
+                    id=initiator_name).values('name')[0]['name']
+                com_id = MpesaCommandId.objects.filter(
+                    id=command_id).values('name')[0]['name']
+                occ = Occassion.objects.filter(
+                    id=occasion).values('name')[0]['name']
+
+            except BaseHTTPError:
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
                 raise Http404
             api_url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest"
             headers = {"Authorization": "Bearer %s" % access_token}
@@ -98,9 +170,15 @@ class CreateBToCTransaction(APIView):
                 response_code=response_code,
                 result_description=result_description,
                 result_code=result_code)
+<<<<<<< HEAD
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         return Response(responses, status=status.HTTP_201_CREATED)
+=======
+        except BaseHTTPError:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(response, status=status.HTTP_201_CREATED)
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
 
 
 class CreateBToBTransaction(APIView):
@@ -110,7 +188,11 @@ class CreateBToBTransaction(APIView):
         access_token = authenticate()
         try:
             try:
+<<<<<<< HEAD
                 party_a = CompanyCodeOrNumber.objects.get(
+=======
+                party_a = CompanyShortCodeOrNumber.objects.get(
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
                     id=request.data['company_short_code'])
                 initiator_name = InitiatorName.objects.get(
                     id=request.data['company_name'])
@@ -118,20 +200,32 @@ class CreateBToBTransaction(APIView):
                     id=request.data['transaction_type'])
                 command_id = MpesaCommandId.objects.get(
                     id=request.data['command_id'])
+<<<<<<< HEAD
                 occasion = Occasion.objects.get(id=request.data['occasion'])
+=======
+                occasion = Occassion.objects.get(id=request.data['occasion'])
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
                 identifier_type_a = IdentifierType.objects.get(
                     id='identifier_type')
                 identifier_type_b = IdentifierType.objects.get(
                     id='identifier_type')
                 amount = request.data['amount'],
                 remarks = request.data['remarks'],
+<<<<<<< HEAD
                 party_b = CompanyCodeOrNumber.objects.get(
+=======
+                party_b = CompanyShortCodeOrNumber.objects.get(
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
                     id=request.data['phone_no']),
                 transaction = Transaction.objects.create(
                     amount=amount,
                     remarks=remarks,
                     party_b=party_b,
+<<<<<<< HEAD
                     Party_a=Party_a,
+=======
+                    Party_a=party_a,
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
                     command_id=command_id,
                     transaction_type=transaction_type,
                     initiator_name=initiator_name,
@@ -143,7 +237,11 @@ class CreateBToBTransaction(APIView):
                 name = initiator_name.name
                 id_type_a = identifier_type_a.name
                 id_type_b = identifier_type_b.name
+<<<<<<< HEAD
             except:
+=======
+            except BaseHTTPError:
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
                 raise Http404
             api_url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest"
             headers = {"Authorization": "Bearer %s" % access_token}
@@ -180,10 +278,17 @@ class CreateBToBTransaction(APIView):
                 checkout_request_id=checkout_request_id,
                 response_code=response_code,
                 result_description=result_description,
+<<<<<<< HEAD
                 result_code=result_code)
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         return Response(responses, status=status.HTTP_201_CREATED)
+=======
+                result_code=result_code)      
+        except BaseHTTPError:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(response, status=status.HTTP_201_CREATED)
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
 
 
 class RegisterCToBUrl(APIView):
@@ -200,7 +305,11 @@ class RegisterCToBUrl(APIView):
             try:
                 initiator_name = InitiatorName.objects.get(
                     id=request.data['company_name'])
+<<<<<<< HEAD
                 party_b = CompanyCodeOrNumber.objects.get(
+=======
+                party_b = CompanyShortCodeOrNumber.objects.get(
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
                     id=request.data['phone_no']),
                 confirmation_url = request.data['confirmation_url']
                 validation_url = request.data['confirmation_url']
@@ -209,7 +318,11 @@ class RegisterCToBUrl(APIView):
                     initiator_name=initiator_name,
                     confirmation_url=confirmation_url,
                     validation_url=validation_url)
+<<<<<<< HEAD
             except:
+=======
+            except BaseHTTPError:
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
                 raise Http404
             party_b = party_b.name
 
@@ -218,7 +331,11 @@ class RegisterCToBUrl(APIView):
             request = {"ShortCode": party_b,
                        "ResponseType": "json",
                        "ConfirmationURL": confirmation_url,
+<<<<<<< HEAD
                        #"http://ip_address:port/confirmation",
+=======
+                       # "http://ip_address:port/confirmation",
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
                        "ValidationURL": validation_url,
                        # "http://ip_address:port/validation_url"
                        }
@@ -241,9 +358,16 @@ class RegisterCToBUrl(APIView):
                 response_code=response_code,
                 result_description=result_description,
                 result_code=result_code)
+<<<<<<< HEAD
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         return Response(responses, status=status.HTTP_201_CREATED)
+=======
+        
+        except BaseHTTPError:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(response, status=status.HTTP_201_CREATED)
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
 
 
 class CheckAccountBalance(APIView):
@@ -253,7 +377,11 @@ class CheckAccountBalance(APIView):
         access_token = authenticate()
         try:
             try:
+<<<<<<< HEAD
                 party_a = CompanyCodeOrNumber.objects.get(
+=======
+                party_a = CompanyShortCodeOrNumber.objects.get(
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
                     id=request.data['company_short_code'])
                 initiator_name = InitiatorName.objects.get(
                     id=request.data['company_name'])
@@ -271,7 +399,11 @@ class CheckAccountBalance(APIView):
                     id=command_id).values('name')[0]['name']
                 party_a = party_a.name
                 name = initiator_name.name
+<<<<<<< HEAD
             except:
+=======
+            except BaseHTTPError:
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
                 raise Http404
             api_url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest"
             headers = {"Authorization": "Bearer %s" % access_token}
@@ -303,9 +435,15 @@ class CheckAccountBalance(APIView):
                 response_code=response_code,
                 result_description=result_description,
                 result_code=result_code)
+<<<<<<< HEAD
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         return Response(responses, status=status.HTTP_201_CREATED)
+=======
+        except BaseHTTPError:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(response, status=status.HTTP_201_CREATED)
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
 
 
 class CheckTransactionStatus(APIView):
@@ -315,7 +453,11 @@ class CheckTransactionStatus(APIView):
         access_token = authenticate()
         try:
             try:
+<<<<<<< HEAD
                 party_a = CompanyCodeOrNumber.objects.get(
+=======
+                party_a = CompanyShortCodeOrNumber.objects.get(
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
                     id=request.data['create_company_short_code_or_number'])
                 initiator_name = InitiatorName.objects.get(
                     id=request.data['company_name'])
@@ -325,7 +467,11 @@ class CheckTransactionStatus(APIView):
                     id=request.data['command_id'])
                 amount = request.data['amount'],
                 remarks = request.data['remarks'],
+<<<<<<< HEAD
                 party_b = CompanyCodeOrNumber.objects.get(
+=======
+                party_b = CompanyShortCodeOrNumber.objects.get(
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
                     id=request.data['phone_no']),
                 transaction = Transaction.objects.create(
                     amount=amount,
@@ -341,7 +487,11 @@ class CheckTransactionStatus(APIView):
                 party_a = party_a.name
                 party_b = party_b.name
                 name = initiator_name.name
+<<<<<<< HEAD
             except:
+=======
+            except BaseHTTPError:
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
                 raise Http404
             api_url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest"
             headers = {"Authorization": "Bearer %s" % access_token}
@@ -376,9 +526,15 @@ class CheckTransactionStatus(APIView):
                 response_code=response_code,
                 result_description=result_description,
                 result_code=result_code)
+<<<<<<< HEAD
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         return Response(responses, status=status.HTTP_201_CREATED)
+=======
+        except BaseHTTPError:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_201_CREATED)
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
 
 
 class TransactionReversal(APIView):
@@ -388,7 +544,11 @@ class TransactionReversal(APIView):
         access_token = authenticate()
         try:
             try:
+<<<<<<< HEAD
                 party_a = CompanyCodeOrNumber.objects.get(
+=======
+                party_a = CompanyShortCodeOrNumber.objects.get(
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
                     id=request.data['company_short_code'])
                 initiator_name = InitiatorName.objects.get(
                     id=request.data['company_name'])
@@ -396,6 +556,7 @@ class TransactionReversal(APIView):
                     id=request.data['transaction_type'])
                 command_id = MpesaCommandId.objects.get(
                     id=request.data['command_id'])
+<<<<<<< HEAD
                 amount = request.data['amount'],
                 remarks = request.data['remarks'],
                 party_b = CompanyCodeOrNumber.objects.get(
@@ -408,13 +569,33 @@ class TransactionReversal(APIView):
                     command_id=command_id,
                     transaction_type=transaction_type,
                     initiator_name=initiator_name)
+=======
+                occassion = Occasion.objects.get(id=request.data['occasion'])
+                amount = request.data['amount'],
+                remarks = request.data['remarks'],
+                party_b = CompanyShortCodeOrNumber.objects.get(
+                    id=request.data['phone_no']),
+                transaction = Transaction.objects.create(
+                    amount=amount,
+                    comments=comments,
+                    party_b=party_b,
+                    party_a=party_a,
+                    command_id=command_id,
+                    transaction_type=transaction_type,
+                    initiator_name=initiator_name,
+                    occasion=occasion)
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
                 initiator = encryptInitiatorPassword()
                 code_a = party_a.name
                 code_b = party_b.name
                 name = initiator_name.name
                 com_id = command_id.name
 
+<<<<<<< HEAD
             except:
+=======
+            except BaseHTTPError:
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
                 raise Http404
             api_url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest"
             headers = {"Authorization": "Bearer %s" % access_token}
@@ -450,7 +631,11 @@ class TransactionReversal(APIView):
                 response_code=response_code,
                 result_description=result_description,
                 result_code=result_code)
+<<<<<<< HEAD
         except:
+=======
+        except BaseHTTPError:
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
             return Response(status=status.HTTP_400_BAD_REQUEST)
         return Response(responses, status=status.HTTP_201_CREATED)
 
@@ -464,7 +649,11 @@ class InitiateLipaNaMpesaTransaction(APIView):
         access_token = authenticate()
         try:
             try:
+<<<<<<< HEAD
                 party_a = CompanyCodeOrNumber.objects.get(
+=======
+                party_a = CompanyShortCodeOrNumber.objects.get(
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
                     id=request.data['company_short_code'])
                 initiator_name = InitiatorName.objects.get(
                     id=request.data['company_name'])
@@ -472,13 +661,21 @@ class InitiateLipaNaMpesaTransaction(APIView):
                     id=request.data['transaction_type'])
                 command_id = MpesaCommandId.objects.get(
                     id=request.data['command_id'])
+<<<<<<< HEAD
+=======
+                # occasion = Occasion.objects.get(id=request.data['occasion'])
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
                 amount = request.data['amount'],
                 remarks = request.data['remarks'],
                 party_b = CompanyCodeOrNumber.objects.get(
                     id=request.data['phone_no']),
                 transaction = Transaction.objects.create(
                     amount=amount,
+<<<<<<< HEAD
                     transaction_description=remarks,
+=======
+                    remarks=remarks,
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
                     party_b=party_b,
                     Party_a=Party_a,
                     command_id=command_id,
@@ -490,7 +687,11 @@ class InitiateLipaNaMpesaTransaction(APIView):
                 t_type = transaction_type.name
                 time = transaction.created
 
+<<<<<<< HEAD
             except:
+=======
+            except BaseHTTPError:
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
                 raise Http404
             password = Password(code_b=code_b, time=time)
             api_url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest"
@@ -528,7 +729,11 @@ class InitiateLipaNaMpesaTransaction(APIView):
                 response_code=response_code,
                 result_description=result_description,
                 result_code=result_code)
+<<<<<<< HEAD
         except:
+=======
+        except BaseHTTPError:
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
             return Response(status=status.HTTP_400_BAD_REQUEST)
         return Response(responses, status=status.HTTP_201_CREATED)
 
@@ -542,6 +747,7 @@ class QueryLipaNaMpesaOnlineTransactionStatus(APIView):
         access_token = authenticate()
         try:
             try:
+<<<<<<< HEAD
                 transaction_response = TransactionResponse.objects.get(
                     id=request.data['transaction_response'])
                 transaction = Transaction.objects.get(
@@ -550,6 +756,22 @@ class QueryLipaNaMpesaOnlineTransactionStatus(APIView):
                     id=transaction.party_b).name
                 time = transaction.created
                 checkout_request_id = transaction_response.checkout_request_id
+=======
+                initiator_name = InitiatorName.objects.get(
+                    id=request.data['company_name'])
+                transaction_type = TransactionType.objects.get(
+                    id=request.data['transaction_type'])
+                party_b = CompanyShortCodeOrNumber.objects.get(
+                    id=request.data['phone_no']),
+                transaction = Transaction.objects.create(
+                    amount=amount,
+                    remarks=remarks,
+                    party_b=party_b,
+                    transaction_type=transaction_type,
+                    initiator_name=initiator_name)
+                code_b = party_b.name
+                time = transaction.created
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
             except:
                 raise Http404
             password = Password(code_b=code_b, time=time)
@@ -559,7 +781,11 @@ class QueryLipaNaMpesaOnlineTransactionStatus(APIView):
                 "BusinessShortCode": code_b,
                 "Password": password,
                 "Timestamp": time,
+<<<<<<< HEAD
                 "CheckoutRequestID": checkout_request_id,
+=======
+                "CheckoutRequestID": checkout_request_ids,
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
             }
 
             response = requests.post(api_url, json=request, headers=headers)
@@ -581,16 +807,26 @@ class QueryLipaNaMpesaOnlineTransactionStatus(APIView):
                 response_code=response_code,
                 result_description=result_description,
                 result_code=result_code)
+<<<<<<< HEAD
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         return Response(responses, status=status.HTTP_201_CREATED)
+=======
+        except BaseHTTPError:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_201_CREATED)
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
 
 
 class CreateOccassion(APIView):
 
     def post(self, request, format=None):
         Occassion.objects.create(name=request.data['occasion'])
+<<<<<<< HEAD
         return Response(responses, status=status.HTTP_201_CREATED)
+=======
+        return Response(status=status.HTTP_201_CREATED)
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
 
 
 class CreateMpesaCommandId(APIView):
@@ -598,7 +834,11 @@ class CreateMpesaCommandId(APIView):
     def post(self, request, format=None):
         MpesaCommandId.objects.create(
             name=request.data['command_id'])
+<<<<<<< HEAD
         return Response(responses, status=status.HTTP_201_CREATED)
+=======
+        return Response(status=status.HTTP_201_CREATED)
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
 
 
 class CreateCompanyShortCodeOrNumber(APIView):
@@ -606,7 +846,11 @@ class CreateCompanyShortCodeOrNumber(APIView):
     def post(self, request, format=None):
         CompanyShortCodeOrNumber.objects.create(
             name=request.data['short_code'])
+<<<<<<< HEAD
         return Response(responses, status=status.HTTP_201_CREATED)
+=======
+        return Response(status=status.HTTP_201_CREATED)
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
 
 
 class CreateInitiatorName(APIView):
@@ -614,7 +858,11 @@ class CreateInitiatorName(APIView):
     def post(self, request, format=None):
         InitiatorName.objects.create(
             name=request.data['initiator_name'])
+<<<<<<< HEAD
         return Response(responses, status=status.HTTP_201_CREATED)
+=======
+        return Response(status=status.HTTP_201_CREATED)
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
 
 
 class CreateTransactionType(APIView):
@@ -622,7 +870,11 @@ class CreateTransactionType(APIView):
     def post(self, request, format=None):
         TransactionType.objects.create(
             name=request.data['transaction_type'])
+<<<<<<< HEAD
         return Response(responses, status=status.HTTP_201_CREATED)
+=======
+        return Response(status=status.HTTP_201_CREATED)
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
 
 
 class CreateInitiatorType(APIView):
@@ -630,7 +882,11 @@ class CreateInitiatorType(APIView):
     def post(self, request, format=None):
         IdentifierType.objects.create(
             name=request.data['transaction_type'])
+<<<<<<< HEAD
         return Response(response, status=status.HTTP_201_CREATED)
+=======
+        return Response(status=status.HTTP_201_CREATED)
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
 
 
 class OccasionListView(generics.ListAPIView):
@@ -640,9 +896,15 @@ class OccasionListView(generics.ListAPIView):
     def list(self, request):
         try:
             occassions = Occassion.objects.all()
+<<<<<<< HEAD
         except:
             raise Http404
         serializer = OccasionSerializer(
+=======
+        except BaseHTTPError:
+            raise Http404
+        serializer = OccassionSerializer(
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
             occassions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -661,10 +923,17 @@ class OccasionDetailAPIView(DestroyModelMixin,
 
     def put(self, request, pk, format=None):
         try:
+<<<<<<< HEAD
             return Occassion.objects.get(pk=pk)
         except Occassion.DoesNotExist:
             raise Http404
         serializer = OccasionSerializer(
+=======
+            occassion = Occassion.objects.get(pk=pk)
+        except Occassion.DoesNotExist:
+            raise Http404
+        serializer = OccassionSerializer(
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
             occassion, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -672,7 +941,11 @@ class OccasionDetailAPIView(DestroyModelMixin,
 
     def delete(self, request, pk, format=None):
         try:
+<<<<<<< HEAD
             return Occassion.objects.get(pk=pk)
+=======
+            occassion = Occassion.objects.get(pk=pk)
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
         except Occassion.DoesNotExist:
             raise Http404
         occassion.delete()
@@ -686,7 +959,11 @@ class MpesaCommandIdListView(generics.ListAPIView):
     def list(self, request):
         try:
             command_ids = MpesaCommandId.objects.all()
+<<<<<<< HEAD
         except:
+=======
+        except MpesaCommandId.DoesNotExist:
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
             raise Http404
         serializer = MpesaCommandIdSerializer(
             command_ids, many=True)
@@ -732,7 +1009,11 @@ class MpesaShortCodeOrNumberListView(generics.ListAPIView):
     def list(self, request):
         try:
             company_codes_or_nos = CompanyShortCodeOrNumber.objects.all()
+<<<<<<< HEAD
         except:
+=======
+        except CompanyShortCodeOrNumber.DoesNotExist:
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
             raise Http404
         serializer = CompanyShortCodeOrNumberSerializer(
             company_codes_or_nos, many=True)
@@ -827,7 +1108,11 @@ class TransactionTypeListView(generics.ListAPIView):
     def list(self, request):
         try:
             transaction_types = TransactionType.objects.all()
+<<<<<<< HEAD
         except:
+=======
+        except TransactionType.DoesNotExist:
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
             raise Http404
         serializer = TransactionTypeSerializer(
             transaction_types, many=True)
@@ -873,7 +1158,11 @@ class IdentifierTypeListView(generics.ListAPIView):
     def list(self, request):
         try:
             identifier_types = IdentifierType.objects.all()
+<<<<<<< HEAD
         except:
+=======
+        except IdentifierType.DoesNotExist:
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
             raise Http404
         serializer = IdentifierTypeSerializer(
             identifier_types, many=True)
@@ -919,7 +1208,11 @@ class TransactionListView(generics.ListAPIView):
     def list(self, request):
         try:
             transactions = Transaction.objects.all()
+<<<<<<< HEAD
         except:
+=======
+        except Transaction.DoesNotExist:
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
             raise Http404
         serializer = TransactionSerializer(
             transactions, many=True)
@@ -944,7 +1237,11 @@ class TransactionResponseListView(generics.ListAPIView):
     def list(self, request):
         try:
             transaction_responses = TransactionResponse.objects.all()
+<<<<<<< HEAD
         except:
+=======
+        except TransactionResponse.DoesNotExist:
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
             raise Http404
         serializer = TransactionResponseSerializer(
             transaction_responses, many=True)
@@ -969,7 +1266,11 @@ class RegistrationListView(generics.ListAPIView):
     def list(self, request):
         try:
             registrations = Registration.objects.all()
+<<<<<<< HEAD
         except:
+=======
+        except Registration.DoesNotExist:
+>>>>>>> bbaa3d3bc1e2b385ddaaa33290b1d6d7cfef2ca6
             raise Http404
         serializer = RegistrationSerializer(
             registrations, many=True)
