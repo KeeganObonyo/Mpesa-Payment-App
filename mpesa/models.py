@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
 from django.db import models
@@ -66,7 +67,6 @@ class Transaction(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     remarks = models.CharField(max_length=200, null=True)
-    transaction_description = models.CharField(max_length=200, null=True)
 
     def __str__(self):
         return str(self.transaction_type)
