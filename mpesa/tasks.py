@@ -88,3 +88,30 @@ def send_register_c_to_b_url(request,access_token):
         response_code=response_code,
         result_description=result_description,
         result_code=result_code)
+
+@task
+def send_check_account_balance(request,access_token):
+    """
+    Task to send create b2b transaction request asynchronously
+    """
+    api_url = "https://sandbox.safaricom.co.ke/mpesa/accountbalance/v1/query"
+    headers = {"Authorization": "Bearer %s" % access_token}
+    response = requests.post(api_url, json=request, headers=headers)
+    response_description = response['ResponseDescription']
+    originator_conversation_id = response['OriginatorConversationID ']
+    conversation_id = response['ConversationID']
+    merchant_request_id = response['MerchantRequestID']
+    checkout_request_id = response['CheckoutRequestID']
+    response_code = response['ResponseCode']
+    result_description = response['ResultDesc']
+    result_code = response['ResultCode']
+    TransactionResponse.objects.create(
+        transaction_feedback=response_description,
+        transaction=transaction,
+        originator_conversation_id=originator_conversation_id,
+        conversation_id=conversation_id,
+        merchant_request_id=merchant_request_id,
+        checkout_request_id=checkout_request_id,
+        response_code=response_code,
+        result_description=result_description,
+        result_code=result_code)
