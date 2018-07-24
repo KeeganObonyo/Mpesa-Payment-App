@@ -171,8 +171,6 @@ class RegisterCToBUrl(APIView):
                 raise Http404
             party_b = party_b.name
 
-            api_url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest"
-            headers = {"Authorization": "Bearer %s" % access_token}
             request = {"ShortCode": party_b,
                        "ResponseType": "json",
                        "ConfirmationURL": confirmation_url,

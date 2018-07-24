@@ -66,7 +66,7 @@ def send_register_c_to_b_url(request,access_token):
     """
     Task to send create b2b transaction request asynchronously
     """
-    api_url = "https://sandbox.safaricom.co.ke/mpesa/b2b/v1/paymentrequest"
+    api_url = "https://sandbox.safaricom.co.ke/mpesa/c2b/v1/registerurl"
     headers = {"Authorization": "Bearer %s" % access_token}
 
     response = requests.post(api_url, json=request, headers=headers)
