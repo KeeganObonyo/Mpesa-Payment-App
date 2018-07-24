@@ -199,3 +199,33 @@ def send_initiate_lipa_na_mpesa_online(request,access_token):
         response_code=response_code,
         result_description=result_description,
         result_code=result_code)
+
+@task
+def send_query_lipa_na_mpesa_online_status(request,access_token):
+    """
+    Task to check stk push transaction status
+    """
+    api_url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
+    headers = {"Authorization": "Bearer %s" % access_token}
+
+    api_url = "https://sandbox.safaricom.co.ke/mpesa/stkpushquery/v1/query"
+    headers = {"Authorization": "Bearer %s" % access_token}
+    response = requests.post(api_url, json=request, headers=headers)
+    response_description = response['ResponseDescription']
+    originator_conversation_id = response['OriginatorConversationID ']
+    conversation_id = response['ConversationID']
+    merchant_request_id = response['MerchantRequestID']
+    checkout_request_id = response['CheckoutRequestID']
+    response_code = response['ResponseCode']
+    result_description = response['ResultDesc']
+    result_code = response['ResultCode']
+    TransactionResponse.objects.create(
+        transaction_feedback=response_description,
+        transaction=transaction,
+        originator_conversation_id=originator_conversation_id,
+        conversation_id=conversation_id,
+        merchant_request_id=merchant_request_id,
+        checkout_request_id=checkout_request_id,
+        response_code=response_code,
+        result_description=result_description,
+        result_code=result_code)
