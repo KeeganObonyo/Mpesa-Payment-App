@@ -316,8 +316,7 @@ class TransactionReversal(APIView):
 
             except:
                 raise Http404
-            api_url = "https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest"
-            headers = {"Authorization": "Bearer %s" % access_token}
+                
             request = {"Initiator": name,
                        "SecurityCredential": initiator,
                        "CommandID": com_id,
@@ -331,25 +330,7 @@ class TransactionReversal(APIView):
                        "Occasion": " "
                        }
 
-            response = requests.post(api_url, json=request, headers=headers)
-            response_description = response['ResponseDescription']
-            originator_conversation_id = response['OriginatorConversationID ']
-            conversation_id = response['ConversationID']
-            merchant_request_id = response['MerchantRequestID']
-            checkout_request_id = response['CheckoutRequestID']
-            response_code = response['ResponseCode']
-            result_description = response['ResultDesc']
-            result_code = response['ResultCode']
-            TransactionResponse.objects.create(
-                transaction_feedback=response_description,
-                transaction=transaction,
-                originator_conversation_id=originator_conversation_id,
-                conversation_id=conversation_id,
-                merchant_request_id=merchant_request_id,
-                checkout_request_id=checkout_request_id,
-                response_code=response_code,
-                result_description=result_description,
-                result_code=result_code)
+            send_check_transaction_reversal.delay(request,access_token)
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         return Response(responses, status=status.HTTP_201_CREATED)
