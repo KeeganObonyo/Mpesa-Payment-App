@@ -5,7 +5,7 @@ chardet==3.0.4
 cryptography==2.3
 Django==1.11
 django-rest-framework==0.1.0
-djangorestframework==3.8.2
+djangorestframework==3.11.2
 idna==2.7
 pycparser==2.18
 pytz==2018.5
