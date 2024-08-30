@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from celery import task
+from celery import shared_task
 import requests
 from rest_framework.response import Response
 from .models import TransactionResponse
 
-@task
+@shared_task
 def send_create_b2c_transaction(request,access_token):
     """
     Task to send create b2c transaction request
@@ -33,7 +33,7 @@ def send_create_b2c_transaction(request,access_token):
         result_description=result_description,
         result_code=result_code)
 
-@task
+@shared_task
 def send_create_b2b_transaction(request,access_token):
     """
     Task to send create b2b transaction request asynchronously
@@ -61,7 +61,7 @@ def send_create_b2b_transaction(request,access_token):
         result_description=result_description,
         result_code=result_code)
 
-@task
+@shared_task
 def send_register_c_to_b_url(request,access_token):
     """
     Task to send create ctob transaction request asynchronously
@@ -89,7 +89,7 @@ def send_register_c_to_b_url(request,access_token):
         result_description=result_description,
         result_code=result_code)
 
-@task
+@shared_task
 def send_check_account_balance(request,access_token):
     """
     Task to check accoubt balance asynchronously
@@ -116,7 +116,7 @@ def send_check_account_balance(request,access_token):
         result_description=result_description,
         result_code=result_code)
 
-@task
+@shared_task
 def send_check_transaction_status(request,access_token):
     """
     Task to check transaction status asynchronously
@@ -143,7 +143,7 @@ def send_check_transaction_status(request,access_token):
         result_description=result_description,
         result_code=result_code)
 
-@task
+@shared_task
 def send_transaction_reversal(request,access_token):
     """
     Task to send create transaction reversal request asynchronously
@@ -172,7 +172,7 @@ def send_transaction_reversal(request,access_token):
         result_code=result_code)
 
 
-@task
+@shared_task
 def send_initiate_lipa_na_mpesa_online(request,access_token):
     """
     Task to initiate lipa na mpesa request online asynchronous
@@ -200,7 +200,7 @@ def send_initiate_lipa_na_mpesa_online(request,access_token):
         result_description=result_description,
         result_code=result_code)
 
-@task
+@shared_task
 def send_query_lipa_na_mpesa_online_status(request,access_token):
     """
     Task to check stk push transaction status
